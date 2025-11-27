@@ -23,6 +23,8 @@ public class SistemaLojaDeCarros {
 
         Venda venda = new Venda(cliente,automovel,FormaPagamento.PIX,data,"Claudio");
 
+        System.out.println(venda.aplicarDesconto(35,true));
+
         venda.imprimirRecibo();
     }
 }

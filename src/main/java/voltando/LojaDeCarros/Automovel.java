@@ -2,6 +2,7 @@ package voltando.LojaDeCarros;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Automovel {
     private String chassi;
@@ -83,5 +84,9 @@ public class Automovel {
             total += a.getPreco();
         }
         return total;
+    }
+
+    public boolean removeAcessorio(String id){
+        return acessorio.removeIf(a -> Objects.equals(a.getId(), id));
     }
 }
