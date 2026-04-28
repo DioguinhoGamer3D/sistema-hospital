@@ -21,6 +21,14 @@ public class Consultas {
         this.preco = preco;
     }
 
+    public Medicos getMedico() {
+        return medico;
+    }
+
+    public Pacientes getPaciente() {
+        return paciente;
+    }
+
     public int getCodC(){
         return this.codC;
     }

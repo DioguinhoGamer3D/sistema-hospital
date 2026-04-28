@@ -45,8 +45,14 @@ public class SistemaHospital {
         System.out.println("código do c2= " + c2.getCodC());
         System.out.println(sistema.pesquisarConsulta(2));
 
-        System.out.println(sistema.todosPacientes());
-        System.out.println(sistema.todosMedicos());
-        System.out.println(sistema.todasConsultas());
+        System.out.println("Todos os Pacientes: "+sistema.todosPacientes());
+        System.out.println("Todos os Médicos: "+sistema.todosMedicos());
+        System.out.println("Todas as Consultas"+sistema.todasConsultas());
+
+        System.out.println("Consultas por Paciente: "+sistema.consultasPorPaciente(1));
+        System.out.println("Consultas por Médico: "+ sistema.consultasPorMedico(2));
+        System.out.println("Consultas por Data: "+ sistema.consultasPorData(LocalDate.of(2026, 2, 9)));
+
+        System.out.println("Paciente por CPF: "+ sistema.buscarPacientePorCpf("111"));
     }
 }

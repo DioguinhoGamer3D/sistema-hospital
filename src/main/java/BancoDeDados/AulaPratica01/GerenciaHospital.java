@@ -130,4 +130,49 @@ public class GerenciaHospital implements Hospital {
     public  List<Consultas> todasConsultas(){
         return new ArrayList<>(consultas.values());
     }
+
+    public List<Consultas> consultasPorPaciente(int codP)throws EntidadeNaoExiste{
+        List<Consultas> consultasPaciente = new ArrayList<>();
+        for(Consultas c: consultas.values()) {
+            if (c.getPaciente().getCodP() == codP) {
+                consultasPaciente.add(c);
+            }
+        } if (consultasPaciente.isEmpty()){
+            throw new EntidadeNaoExiste("Consultas", codP);
+        }
+        return consultasPaciente;
+    }
+
+    public List<Consultas> consultasPorMedico(int codM)throws EntidadeNaoExiste{
+        List<Consultas> consultasMedico = new ArrayList<>();
+        for(Consultas c: consultas.values()){
+            if(c.getMedico().getCodM() == codM){
+                consultasMedico.add(c);
+            }
+        } if (consultasMedico.isEmpty()){
+            throw new EntidadeNaoExiste("Consultas", codM);
+        }
+        return consultasMedico;
+    }
+
+    public List<Consultas> consultasPorData(LocalDate data) throws EntidadeNaoExiste{
+        List<Consultas> consultasData = new ArrayList<>();
+        for (Consultas c: consultas.values()){
+            if (c.getData().equals(data)){
+                consultasData.add(c);
+            }
+        } if (consultasData.isEmpty()){
+            throw new EntidadeNaoExiste("Consulta", data);
+        }
+        return consultasData;
+    }
+    public Pacientes buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste{
+        for (Pacientes p: pacientes.values()){
+            if (p.getCPF().equals(cpf)){
+                return p;
+            }
+        }
+        throw new EntidadeNaoExiste("Paciente", cpf);
+    }
+    //TODO terminar o resto dos metodos que faltam
 }

@@ -17,4 +17,8 @@ public interface Hospital {
     Pacientes pesquisarPaciente(int codP) throws EntidadeNaoExiste;
     Consultas pesquisarConsulta(int codC) throws EntidadeNaoExiste;
     Medicos pesquisarMedico(int codM) throws EntidadeNaoExiste;
+    List<Consultas> consultasPorPaciente(int codP)throws EntidadeNaoExiste;
+    List<Consultas> consultasPorMedico(int codM)throws EntidadeNaoExiste;
+    List<Consultas> consultasPorData(LocalDate data) throws EntidadeNaoExiste;
+    Pacientes buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste;
 }
