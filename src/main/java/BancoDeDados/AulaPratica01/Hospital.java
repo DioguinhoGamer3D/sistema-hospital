@@ -21,4 +21,11 @@ public interface Hospital {
     List<Consultas> consultasPorMedico(int codM)throws EntidadeNaoExiste;
     List<Consultas> consultasPorData(LocalDate data) throws EntidadeNaoExiste;
     Pacientes buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste;
+    boolean consultaJaExiste(Pacientes p, Medicos m, LocalDate data);
+    boolean medicoDisponivel(Medicos m, LocalDate data);
+    boolean pacientePodeConsultar(String cpf);
+    double calcularFaturamento();
+    double faturamentoPorMedico(int codM);
+    Medicos medicoComMaisConsultas();
+    Pacientes pacienteMaisFrequente();
 }

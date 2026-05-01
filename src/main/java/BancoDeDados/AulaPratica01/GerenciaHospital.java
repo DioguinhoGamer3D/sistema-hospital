@@ -174,5 +174,80 @@ public class GerenciaHospital implements Hospital {
         }
         throw new EntidadeNaoExiste("Paciente", cpf);
     }
-    //TODO terminar o resto dos metodos que faltam
+
+    public boolean consultaJaExiste(Pacientes p, Medicos m, LocalDate data){
+        for (Consultas c: consultas.values()){
+            if (c.getPaciente().equals(p) && c.getMedico().equals(m) && c.getData().equals(data)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean medicoDisponivel(Medicos m, LocalDate data){
+        for(Consultas c: consultas.values()){
+            if (c.getMedico().equals(m) && c.getData().equals(data)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean pacientePodeConsultar(String cpf){
+        if (cpfsBanidos.contains(cpf)){
+            return false;
+        }
+        return true;
+    }
+    public double calcularFaturamento(){
+        double totalFaturamento = 0;
+        for (Consultas c: consultas.values()){
+            totalFaturamento+= c.getPreco();
+        }
+        return totalFaturamento;
+    }
+
+    public double faturamentoPorMedico(int codM){
+        double totalMedico = 0;
+        for (Consultas c : consultas.values()){
+            if (c.getMedico().equals(medicos.get(codM))){
+                totalMedico += c.getPreco();
+            }
+        }
+        return totalMedico;
+    }
+
+    public Medicos medicoComMaisConsultas(){
+        Map<Medicos, Integer> contagem = new HashMap<>();
+        for (Consultas c : consultas.values()){
+            Medicos m = c.getMedico();
+            contagem.put(m, contagem.getOrDefault(m, 0) + 1);
+        }
+        Medicos maisConsulta = null;
+        int max = 0;
+
+        for (Map.Entry<Medicos, Integer> entry : contagem.entrySet()){
+            if (entry.getValue() > max){
+                max = entry.getValue();
+                maisConsulta = entry.getKey();
+            }
+        }
+        return maisConsulta;
+    }
+
+    public Pacientes pacienteMaisFrequente(){
+        Map<Pacientes, Integer> contagem = new HashMap<>();
+        for (Consultas c : consultas.values()){
+            Pacientes p = c.getPaciente();
+            contagem.put(p, contagem.getOrDefault(p, 0)+ 1);
+        }
+        Pacientes maisConsulta = null;
+        int max = 0;
+
+        for (Map.Entry<Pacientes, Integer> entry : contagem.entrySet()){
+            if (entry.getValue() > max){
+                max = entry.getValue();
+                maisConsulta = entry.getKey();
+            }
+        }
+        return maisConsulta;
+    }
 }

@@ -54,5 +54,7 @@ public class SistemaHospital {
         System.out.println("Consultas por Data: "+ sistema.consultasPorData(LocalDate.of(2026, 2, 9)));
 
         System.out.println("Paciente por CPF: "+ sistema.buscarPacientePorCpf("111"));
+
+        System.out.println(sistema.consultaJaExiste(p1,m1,LocalDate.of(2026, 1, 23)));
     }
 }
