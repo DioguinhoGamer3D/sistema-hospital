@@ -1,5 +1,6 @@
 package BancoDeDados.AulaPratica01;
 
+import BancoDeDados.AulaPratica01.Enum.Sexo;
 import BancoDeDados.AulaPratica01.Exceptions.EntidadeJaExiste;
 import BancoDeDados.AulaPratica01.Exceptions.EntidadeNaoExiste;
 
@@ -21,7 +22,7 @@ public class GerenciaHospital implements Hospital {
     }
 
     @Override
-    public Pacientes cadastrarPaciente(String nome, String CPF, Enum sexo, int idade, String convenio)
+    public Pacientes cadastrarPaciente(String nome, String CPF, Sexo sexo, int idade, String convenio)
             throws EntidadeJaExiste {
         if (cpfsBanidos.contains(CPF)) {
             throw new RuntimeException("CPF banido!");
@@ -55,7 +56,7 @@ public class GerenciaHospital implements Hospital {
     }
 
     @Override
-    public Medicos cadastrarMedico(String nome, String CPF, Enum sexo, String especialidade, String turno, double salario)
+    public Medicos cadastrarMedico(String nome, String CPF, Sexo sexo, String especialidade, String turno, double salario)
             throws EntidadeJaExiste {
         for (Medicos m : medicos.values()) {
             if (m.getCPF().equals(CPF)) {
@@ -192,11 +193,9 @@ public class GerenciaHospital implements Hospital {
         return true;
     }
     public boolean pacientePodeConsultar(String cpf){
-        if (cpfsBanidos.contains(cpf)){
-            return false;
-        }
-        return true;
+        return !cpfsBanidos.contains(cpf);
     }
+
     public double calcularFaturamento(){
         double totalFaturamento = 0;
         for (Consultas c: consultas.values()){
@@ -205,7 +204,7 @@ public class GerenciaHospital implements Hospital {
         return totalFaturamento;
     }
 
-    public double faturamentoPorMedico(int codM){
+    public double faturamentoPorMedico(int codM) throws EntidadeNaoExiste{
         double totalMedico = 0;
         for (Consultas c : consultas.values()){
             if (c.getMedico().equals(medicos.get(codM))){
@@ -249,5 +248,56 @@ public class GerenciaHospital implements Hospital {
             }
         }
         return maisConsulta;
+    }
+    public List<Medicos> buscarPorEspecialidade(String especialidade){
+        List<Medicos> medicosEsecialidade = new ArrayList<>();
+        for (Medicos m : medicos.values()){
+            if (m.getEspecialidade().equals(especialidade)){
+                medicosEsecialidade.add(m);
+            }
+        }
+        return medicosEsecialidade;
+    }
+
+    public List<Consultas> consultasPorPeriodo(LocalDate inicio, LocalDate fim){
+        List<Consultas> consultasData = new ArrayList<>();
+        for (Consultas c: consultas.values()){
+            if (c.getData().isAfter(inicio) && c.getData().isBefore(fim)){
+                consultasData.add(c);
+            }
+        }
+        return consultasData;
+    }
+    public void cancelarConsulta(int codC) throws EntidadeNaoExiste{
+        for (Consultas c : consultas.values()){
+            if (c.getCodC() != codC){
+                throw new EntidadeNaoExiste("Consulta", codC);
+            } else {
+                consultas.remove(codC, c);
+            }
+        }
+    }
+    public void atualizarPaciente(int codP, Optional<String> nome,
+                                  Optional<String> CPF, Optional<Sexo> sexo, OptionalInt idade,
+                                  Optional<String> convenio) throws EntidadeNaoExiste{
+        Pacientes p = pacientes.get(codP);
+        if (p == null){
+            throw new EntidadeNaoExiste("Paciente ", codP);
+        }
+        if (nome.isPresent()) {
+            p.setNome(nome.get());
+        }
+        if (CPF.isPresent()) {
+            p.setCPF(CPF.get());
+        }
+        if (sexo.isPresent()) {
+            p.setSexo(sexo.get());
+        }
+        if (idade.isPresent()) {
+            p.setIdade(idade.getAsInt());
+        }
+        if (convenio.isPresent()) {
+            p.setConvenio(convenio.get());
+        }
     }
 }
