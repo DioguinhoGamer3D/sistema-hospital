@@ -2,7 +2,7 @@ package BancoDeDados.AulaPratica01;
 
 import java.util.Objects;
 
-public class Pacientes {
+public class Paciente {
     private static int contador = 1;
 
     private final int codP;
@@ -12,7 +12,7 @@ public class Pacientes {
     private int idade;
     private String convenio;
 
-    public Pacientes(String nome, String CPF, Enum sexo, int idade, String convenio){
+    public Paciente(String nome, String CPF, Enum sexo, int idade, String convenio){
         this.codP = contador++;
         this.nome = nome;
         this.CPF = CPF;
@@ -69,8 +69,8 @@ public class Pacientes {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Pacientes pacientes = (Pacientes) o;
-        return codP == pacientes.codP && Objects.equals(CPF, pacientes.CPF);
+        Paciente paciente = (Paciente) o;
+        return codP == paciente.codP && Objects.equals(CPF, paciente.CPF);
     }
 
     @Override

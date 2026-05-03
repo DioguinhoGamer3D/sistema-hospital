@@ -2,17 +2,17 @@ package BancoDeDados.AulaPratica01;
 
 import java.time.LocalDate;
 
-public class Consultas {
+public class Consulta {
     private static int contador = 1;
 
     private int codC;
-    private Pacientes paciente; // FK vira objeto
-    private Medicos medico;     // FK vira objeto
+    private Paciente paciente; // FK vira objeto
+    private Medico medico;     // FK vira objeto
     private LocalDate data;
     private String diagnostico;
     private double preco;
 
-    public Consultas(Pacientes paciente, Medicos medico, LocalDate data, String diagnostico, double preco) {
+    public Consulta(Paciente paciente, Medico medico, LocalDate data, String diagnostico, double preco) {
         this.codC = contador ++;
         this.paciente = paciente;
         this.medico = medico;
@@ -21,11 +21,11 @@ public class Consultas {
         this.preco = preco;
     }
 
-    public Medicos getMedico() {
+    public Medico getMedico() {
         return medico;
     }
 
-    public Pacientes getPaciente() {
+    public Paciente getPaciente() {
         return paciente;
     }
 

@@ -9,9 +9,9 @@ import java.util.*;
 
 public class GerenciaHospital implements Hospital {
 
-    private Map<Integer, Pacientes> pacientes;
-    private Map<Integer, Medicos> medicos;
-    private Map<Integer, Consultas> consultas;
+    private Map<Integer, Paciente> pacientes;
+    private Map<Integer, Medico> medicos;
+    private Map<Integer, Consulta> consultas;
     private Set<String> cpfsBanidos;
 
     public GerenciaHospital() {
@@ -22,23 +22,23 @@ public class GerenciaHospital implements Hospital {
     }
 
     @Override
-    public Pacientes cadastrarPaciente(String nome, String CPF, Sexo sexo, int idade, String convenio)
+    public Paciente cadastrarPaciente(String nome, String CPF, Sexo sexo, int idade, String convenio)
             throws EntidadeJaExiste {
         if (cpfsBanidos.contains(CPF)) {
             throw new RuntimeException("CPF banido!");
         }
-        for (Pacientes p : pacientes.values()) {
+        for (Paciente p : pacientes.values()) {
             if (p.getCPF().equals(CPF)) {
                 throw new EntidadeJaExiste("Paciente", CPF);
             }
         }
-        Pacientes novo = new Pacientes(nome, CPF, sexo, idade, convenio);
+        Paciente novo = new Paciente(nome, CPF, sexo, idade, convenio);
         pacientes.put(novo.getCodP(), novo);
         return novo;
     }
 
     @Override
-    public Pacientes pesquisarPaciente(int codP) throws EntidadeNaoExiste{
+    public Paciente pesquisarPaciente(int codP) throws EntidadeNaoExiste{
         if (!pacientes.containsKey(codP)) {
             throw new EntidadeNaoExiste("Paciente ", codP);
         }else{
@@ -56,19 +56,19 @@ public class GerenciaHospital implements Hospital {
     }
 
     @Override
-    public Medicos cadastrarMedico(String nome, String CPF, Sexo sexo, String especialidade, String turno, double salario)
+    public Medico cadastrarMedico(String nome, String CPF, Sexo sexo, String especialidade, String turno, double salario)
             throws EntidadeJaExiste {
-        for (Medicos m : medicos.values()) {
+        for (Medico m : medicos.values()) {
             if (m.getCPF().equals(CPF)) {
                 throw new EntidadeJaExiste("Medico", CPF);
             }
         }
-        Medicos novo = new Medicos(nome, CPF, sexo, especialidade, turno, salario);
+        Medico novo = new Medico(nome, CPF, sexo, especialidade, turno, salario);
         medicos.put(novo.getCodM(), novo);
         return novo;
     }
 
-    public Medicos pesquisarMedico(int codM) throws EntidadeNaoExiste{
+    public Medico pesquisarMedico(int codM) throws EntidadeNaoExiste{
         if(!medicos.containsKey(codM)){
             throw new EntidadeNaoExiste("Medico", codM);
         } else {
@@ -86,22 +86,22 @@ public class GerenciaHospital implements Hospital {
     }
 
     @Override
-    public Consultas cadastrarConsulta(Pacientes p, Medicos m, LocalDate data, String diagnostico, double preco)
+    public Consulta cadastrarConsulta(Paciente p, Medico m, LocalDate data, String diagnostico, double preco)
             throws EntidadeNaoExiste {
-        Pacientes paciente = pacientes.get(p.getCodP());
+        Paciente paciente = pacientes.get(p.getCodP());
         if (paciente == null) {
             throw new EntidadeNaoExiste("Paciente", p.getCodP());
         }
-        Medicos medico = medicos.get(m.getCodM());
+        Medico medico = medicos.get(m.getCodM());
         if (medico == null) {
             throw new EntidadeNaoExiste("Medico", m.getCodM());
         }
-        Consultas nova = new Consultas(paciente, medico, data, diagnostico, preco);
+        Consulta nova = new Consulta(paciente, medico, data, diagnostico, preco);
         consultas.put(nova.getCodC(), nova);
         return nova;
     }
 
-    public Consultas pesquisarConsulta(int codC) throws EntidadeNaoExiste{
+    public Consulta pesquisarConsulta(int codC) throws EntidadeNaoExiste{
         if(!consultas.containsKey(codC)){
             throw new EntidadeNaoExiste("Consulta", codC);
         } else{
@@ -122,53 +122,53 @@ public class GerenciaHospital implements Hospital {
         cpfsBanidos.add(CPF);
     }
 
-    public List<Pacientes> todosPacientes(){
+    public List<Paciente> todosPacientes(){
         return new ArrayList<>(pacientes.values());
     }
-    public List<Medicos> todosMedicos(){
+    public List<Medico> todosMedicos(){
         return new ArrayList<>(medicos.values());
     }
-    public  List<Consultas> todasConsultas(){
+    public  List<Consulta> todasConsultas(){
         return new ArrayList<>(consultas.values());
     }
 
-    public List<Consultas> consultasPorPaciente(int codP)throws EntidadeNaoExiste{
-        List<Consultas> consultasPaciente = new ArrayList<>();
-        for(Consultas c: consultas.values()) {
+    public List<Consulta> consultasPorPaciente(int codP) throws EntidadeNaoExiste{
+        List<Consulta> consultaPaciente = new ArrayList<>();
+        for(Consulta c: consultas.values()) {
             if (c.getPaciente().getCodP() == codP) {
-                consultasPaciente.add(c);
+                consultaPaciente.add(c);
             }
-        } if (consultasPaciente.isEmpty()){
+        } if (consultaPaciente.isEmpty()){
             throw new EntidadeNaoExiste("Consultas", codP);
         }
-        return consultasPaciente;
+        return consultaPaciente;
     }
 
-    public List<Consultas> consultasPorMedico(int codM)throws EntidadeNaoExiste{
-        List<Consultas> consultasMedico = new ArrayList<>();
-        for(Consultas c: consultas.values()){
+    public List<Consulta> consultasPorMedico(int codM) throws EntidadeNaoExiste{
+        List<Consulta> consultaMedico = new ArrayList<>();
+        for(Consulta c: consultas.values()){
             if(c.getMedico().getCodM() == codM){
-                consultasMedico.add(c);
+                consultaMedico.add(c);
             }
-        } if (consultasMedico.isEmpty()){
+        } if (consultaMedico.isEmpty()){
             throw new EntidadeNaoExiste("Consultas", codM);
         }
-        return consultasMedico;
+        return consultaMedico;
     }
 
-    public List<Consultas> consultasPorData(LocalDate data) throws EntidadeNaoExiste{
-        List<Consultas> consultasData = new ArrayList<>();
-        for (Consultas c: consultas.values()){
+    public List<Consulta> consultasPorData(LocalDate data) throws EntidadeNaoExiste{
+        List<Consulta> consultaData = new ArrayList<>();
+        for (Consulta c: consultas.values()){
             if (c.getData().equals(data)){
-                consultasData.add(c);
+                consultaData.add(c);
             }
-        } if (consultasData.isEmpty()){
+        } if (consultaData.isEmpty()){
             throw new EntidadeNaoExiste("Consulta", data);
         }
-        return consultasData;
+        return consultaData;
     }
-    public Pacientes buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste{
-        for (Pacientes p: pacientes.values()){
+    public Paciente buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste{
+        for (Paciente p: pacientes.values()){
             if (p.getCPF().equals(cpf)){
                 return p;
             }
@@ -176,111 +176,123 @@ public class GerenciaHospital implements Hospital {
         throw new EntidadeNaoExiste("Paciente", cpf);
     }
 
-    public boolean consultaJaExiste(Pacientes p, Medicos m, LocalDate data){
-        for (Consultas c: consultas.values()){
+    public boolean consultaJaExiste(Paciente p, Medico m, LocalDate data){
+        for (Consulta c: consultas.values()){
             if (c.getPaciente().equals(p) && c.getMedico().equals(m) && c.getData().equals(data)){
                 return true;
             }
         }
         return false;
     }
-    public boolean medicoDisponivel(Medicos m, LocalDate data){
-        for(Consultas c: consultas.values()){
-            if (c.getMedico().equals(m) && c.getData().equals(data)){
-                return false;
+
+    public boolean medicoDisponivel(Medico m, LocalDate data) throws EntidadeNaoExiste{
+        if (medicos.get(m.getCodM()) == m){
+            throw new EntidadeNaoExiste("Medico", m.getCodM());
             }
-        }
+        for(Consulta c: consultas.values()){
+                if(c.getMedico().equals(m) && c.getData().equals(data)){
+                    return false;
+                }
+            }
         return true;
     }
-    public boolean pacientePodeConsultar(String cpf){
+
+    public boolean pacientePodeConsultar(String cpf) throws EntidadeNaoExiste{
+        buscarPacientePorCpf(cpf);
         return !cpfsBanidos.contains(cpf);
     }
 
     public double calcularFaturamento(){
         double totalFaturamento = 0;
-        for (Consultas c: consultas.values()){
+        for (Consulta c: consultas.values()){
             totalFaturamento+= c.getPreco();
         }
         return totalFaturamento;
     }
 
     public double faturamentoPorMedico(int codM) throws EntidadeNaoExiste{
-        double totalMedico = 0;
-        for (Consultas c : consultas.values()){
-            if (c.getMedico().equals(medicos.get(codM))){
-                totalMedico += c.getPreco();
-            }
+        if (!medicos.containsKey(codM)){
+            throw new EntidadeNaoExiste("Medico", codM);
         }
-        return totalMedico;
+        double total = 0;
+        for (Consulta c : consultas.values()){
+            if (c.getMedico().getCodM() == codM){
+                total += c.getPreco();
+                }
+        }
+        return total;
     }
 
-    public Medicos medicoComMaisConsultas(){
-        Map<Medicos, Integer> contagem = new HashMap<>();
-        for (Consultas c : consultas.values()){
-            Medicos m = c.getMedico();
+    public List<Medico> medicoComMaisConsultas() {
+        Map<Medico, Integer> contagem = new HashMap<>();
+        for (Consulta c : consultas.values()) {
+            Medico m = c.getMedico();
             contagem.put(m, contagem.getOrDefault(m, 0) + 1);
         }
-        Medicos maisConsulta = null;
         int max = 0;
-
-        for (Map.Entry<Medicos, Integer> entry : contagem.entrySet()){
-            if (entry.getValue() > max){
-                max = entry.getValue();
-                maisConsulta = entry.getKey();
+        for (Medico m : contagem.keySet()) {
+            if (contagem.get(m) > max) {
+                max = contagem.get(m);
             }
         }
-        return maisConsulta;
-    }
-
-    public Pacientes pacienteMaisFrequente(){
-        Map<Pacientes, Integer> contagem = new HashMap<>();
-        for (Consultas c : consultas.values()){
-            Pacientes p = c.getPaciente();
-            contagem.put(p, contagem.getOrDefault(p, 0)+ 1);
-        }
-        Pacientes maisConsulta = null;
-        int max = 0;
-
-        for (Map.Entry<Pacientes, Integer> entry : contagem.entrySet()){
-            if (entry.getValue() > max){
-                max = entry.getValue();
-                maisConsulta = entry.getKey();
+        List<Medico> resultado = new ArrayList<>();
+        for (Medico m : contagem.keySet()) {
+            if (contagem.get(m) == max) {
+                resultado.add(m);
             }
         }
-        return maisConsulta;
+        return resultado;
     }
-    public List<Medicos> buscarPorEspecialidade(String especialidade){
-        List<Medicos> medicosEsecialidade = new ArrayList<>();
-        for (Medicos m : medicos.values()){
+
+    public List<Paciente> pacienteMaisFrequente() {
+        Map<Paciente, Integer> contagem = new HashMap<>();
+        for (Consulta c : consultas.values()) {
+            Paciente p = c.getPaciente();
+            contagem.put(p, contagem.getOrDefault(p, 0) + 1);
+        }
+        int max = 0;
+        for (Paciente p : contagem.keySet()) {
+            if (contagem.get(p) > max) {
+                max = contagem.get(p);
+            }
+        }
+        List<Paciente> resultado = new ArrayList<>();
+        for (Paciente p : contagem.keySet()) {
+            if (contagem.get(p) == max) {
+                resultado.add(p);
+            }
+        }
+        return resultado;
+    }
+    public List<Medico> buscarPorEspecialidade(String especialidade){
+        List<Medico> medicoEsecialidade = new ArrayList<>();
+        for (Medico m : medicos.values()){
             if (m.getEspecialidade().equals(especialidade)){
-                medicosEsecialidade.add(m);
+                medicoEsecialidade.add(m);
             }
         }
-        return medicosEsecialidade;
+        return medicoEsecialidade;
     }
 
-    public List<Consultas> consultasPorPeriodo(LocalDate inicio, LocalDate fim){
-        List<Consultas> consultasData = new ArrayList<>();
-        for (Consultas c: consultas.values()){
-            if (c.getData().isAfter(inicio) && c.getData().isBefore(fim)){
-                consultasData.add(c);
+    public List<Consulta> consultasPorPeriodo(LocalDate inicio, LocalDate fim){
+        List<Consulta> consultaData = new ArrayList<>();
+        for (Consulta c: consultas.values()){
+            if (!c.getData().isAfter(inicio) && !c.getData().isBefore(fim)){
+                consultaData.add(c);
             }
         }
-        return consultasData;
+        return consultaData;
     }
-    public void cancelarConsulta(int codC) throws EntidadeNaoExiste{
-        for (Consultas c : consultas.values()){
-            if (c.getCodC() != codC){
-                throw new EntidadeNaoExiste("Consulta", codC);
-            } else {
-                consultas.remove(codC, c);
-            }
+    public void cancelarConsulta(int codC) throws EntidadeNaoExiste {
+        if (!consultas.containsKey(codC)) {
+            throw new EntidadeNaoExiste("Consulta", codC);
         }
+        consultas.remove(codC);
     }
     public void atualizarPaciente(int codP, Optional<String> nome,
                                   Optional<String> CPF, Optional<Sexo> sexo, OptionalInt idade,
                                   Optional<String> convenio) throws EntidadeNaoExiste{
-        Pacientes p = pacientes.get(codP);
+        Paciente p = pacientes.get(codP);
         if (p == null){
             throw new EntidadeNaoExiste("Paciente ", codP);
         }

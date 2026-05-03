@@ -1,6 +1,6 @@
 package BancoDeDados.AulaPratica01;
 
-public class Medicos {
+public class Medico {
     private static int contador = 1;
 
     private int codM;
@@ -11,7 +11,7 @@ public class Medicos {
     private String turno;
     private double salario;
 
-    public Medicos(String nome, String CPF, Enum sexo, String especialidade, String turno, double salario) {
+    public Medico(String nome, String CPF, Enum sexo, String especialidade, String turno, double salario) {
         this.codM = contador++;
         this.nome = nome;
         this.CPF = CPF;

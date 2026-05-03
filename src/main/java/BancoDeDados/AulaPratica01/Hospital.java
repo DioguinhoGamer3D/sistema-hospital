@@ -10,29 +10,29 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public interface Hospital {
-    Pacientes cadastrarPaciente(String nome, String CPF, Sexo sexo, int idade, String convenio) throws EntidadeJaExiste;
+    Paciente cadastrarPaciente(String nome, String CPF, Sexo sexo, int idade, String convenio) throws EntidadeJaExiste;
     void removerPaciente(int codP) throws EntidadeNaoExiste;
-    Medicos cadastrarMedico(String nome, String CPF, Sexo sexo, String especialidade, String turno, double salario);
+    Medico cadastrarMedico(String nome, String CPF, Sexo sexo, String especialidade, String turno, double salario);
     void removerMedico(int codM) throws EntidadeNaoExiste;
-    Consultas cadastrarConsulta(Pacientes p, Medicos m, LocalDate data, String diagnostico, double preco);
+    Consulta cadastrarConsulta(Paciente p, Medico m, LocalDate data, String diagnostico, double preco);
     void removerConsulta(int codC) throws EntidadeNaoExiste;
     void naoDeNemAgua(String CPF);
-    Pacientes pesquisarPaciente(int codP) throws EntidadeNaoExiste;
-    Consultas pesquisarConsulta(int codC) throws EntidadeNaoExiste;
-    Medicos pesquisarMedico(int codM) throws EntidadeNaoExiste;
-    List<Consultas> consultasPorPaciente(int codP)throws EntidadeNaoExiste;
-    List<Consultas> consultasPorMedico(int codM)throws EntidadeNaoExiste;
-    List<Consultas> consultasPorData(LocalDate data) throws EntidadeNaoExiste;
-    Pacientes buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste;
-    boolean consultaJaExiste(Pacientes p, Medicos m, LocalDate data);
-    boolean medicoDisponivel(Medicos m, LocalDate data) throws EntidadeNaoExiste;
+    Paciente pesquisarPaciente(int codP) throws EntidadeNaoExiste;
+    Consulta pesquisarConsulta(int codC) throws EntidadeNaoExiste;
+    Medico pesquisarMedico(int codM) throws EntidadeNaoExiste;
+    List<Consulta> consultasPorPaciente(int codP)throws EntidadeNaoExiste;
+    List<Consulta> consultasPorMedico(int codM)throws EntidadeNaoExiste;
+    List<Consulta> consultasPorData(LocalDate data) throws EntidadeNaoExiste;
+    Paciente buscarPacientePorCpf(String cpf) throws EntidadeNaoExiste;
+    boolean consultaJaExiste(Paciente p, Medico m, LocalDate data);
+    boolean medicoDisponivel(Medico m, LocalDate data) throws EntidadeNaoExiste;
     boolean pacientePodeConsultar(String cpf) throws EntidadeNaoExiste;
     double calcularFaturamento();
     double faturamentoPorMedico(int codM) throws EntidadeNaoExiste;
-    Medicos medicoComMaisConsultas();
-    Pacientes pacienteMaisFrequente();
-    List<Medicos> buscarPorEspecialidade(String especialidade);
-    List<Consultas> consultasPorPeriodo(LocalDate inicio, LocalDate fim);
+    List<Medico> medicoComMaisConsultas();
+    List<Paciente> pacienteMaisFrequente();
+    List<Medico> buscarPorEspecialidade(String especialidade);
+    List<Consulta> consultasPorPeriodo(LocalDate inicio, LocalDate fim);
     void cancelarConsulta(int codC) throws EntidadeNaoExiste;
     void atualizarPaciente(int codP, Optional<String> nome,
                            Optional<String> CPF, Optional<Sexo> sexo, OptionalInt idade,

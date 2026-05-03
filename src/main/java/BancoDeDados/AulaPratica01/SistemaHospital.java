@@ -9,22 +9,22 @@ public class SistemaHospital {
 
         GerenciaHospital sistema = new GerenciaHospital();
 
-        Pacientes p1 = sistema.cadastrarPaciente("Maria", "111",
+        Paciente p1 = sistema.cadastrarPaciente("Maria", "111",
                 Sexo.FEMININO, 25,"Unimed");
-        Pacientes p2 = sistema.cadastrarPaciente("Carlos","222",
+        Paciente p2 = sistema.cadastrarPaciente("Carlos","222",
                 Sexo.MASCULINO, 18,"Unimed");
 
-        Medicos m1 = sistema.cadastrarMedico("José","555", Sexo.MASCULINO,
+        Medico m1 = sistema.cadastrarMedico("José","555", Sexo.MASCULINO,
                 "Geral" , "M", 3000);
-        Medicos m2 = sistema.cadastrarMedico("Nicolau","777" ,Sexo.MASCULINO,
+        Medico m2 = sistema.cadastrarMedico("Nicolau","777" ,Sexo.MASCULINO,
                 "Pediatra", "M", 4000);
-        Medicos m3 = sistema.cadastrarMedico("Raul","666" , Sexo.MASCULINO,
+        Medico m3 = sistema.cadastrarMedico("Raul","666" , Sexo.MASCULINO,
                 "Oftamologista", "T", 1250);
 
-        Consultas c1 = sistema.cadastrarConsulta(p1,m1,
+        Consulta c1 = sistema.cadastrarConsulta(p1,m1,
                 LocalDate.of(2026,1,23),
                 "Gripe", 45.5);
-        Consultas c2 = sistema.cadastrarConsulta(p2,m2,
+        Consulta c2 = sistema.cadastrarConsulta(p2,m2,
                 LocalDate.of(2026,2,9),
                 "Dor de cabeca", 50);
 
