@@ -1,4 +1,4 @@
-package BancoDeDados.AulaPratica01.Enum;
+package BancoDeDados.SistemaHospital.Enum;
 
 public enum TipoEntidade {
     PACIENTE,

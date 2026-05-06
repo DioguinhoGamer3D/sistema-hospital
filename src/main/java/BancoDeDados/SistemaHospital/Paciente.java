@@ -1,4 +1,4 @@
-package BancoDeDados.AulaPratica01;
+package BancoDeDados.SistemaHospital;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package BancoDeDados.AulaPratica01;
+package BancoDeDados.SistemaHospital;
 
-import BancoDeDados.AulaPratica01.Enum.Sexo;
+import BancoDeDados.SistemaHospital.Enum.Sexo;
 
 import java.time.LocalDate;
 

@@ -1,8 +1,8 @@
-package BancoDeDados.AulaPratica01;
+package BancoDeDados.SistemaHospital;
 
-import BancoDeDados.AulaPratica01.Enum.Sexo;
-import BancoDeDados.AulaPratica01.Exceptions.EntidadeJaExiste;
-import BancoDeDados.AulaPratica01.Exceptions.EntidadeNaoExiste;
+import BancoDeDados.SistemaHospital.Enum.Sexo;
+import BancoDeDados.SistemaHospital.Exceptions.EntidadeJaExiste;
+import BancoDeDados.SistemaHospital.Exceptions.EntidadeNaoExiste;
 
 import java.time.LocalDate;
 import java.util.*;

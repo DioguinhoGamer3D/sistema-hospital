@@ -1,4 +1,4 @@
-package BancoDeDados.AulaPratica01.Exceptions;
+package BancoDeDados.SistemaHospital.Exceptions;
 
 public class EntidadeJaExiste extends HospitalException {
     public EntidadeJaExiste(String entidade, Object id) {
