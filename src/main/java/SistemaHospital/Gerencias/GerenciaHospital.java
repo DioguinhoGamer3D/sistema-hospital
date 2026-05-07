@@ -1,8 +1,11 @@
-package BancoDeDados.SistemaHospital;
+package SistemaHospital.Gerencias;
 
-import BancoDeDados.SistemaHospital.Enum.Sexo;
-import BancoDeDados.SistemaHospital.Exceptions.EntidadeJaExiste;
-import BancoDeDados.SistemaHospital.Exceptions.EntidadeNaoExiste;
+import SistemaHospital.Classes.Consulta;
+import SistemaHospital.Classes.Medico;
+import SistemaHospital.Classes.Paciente;
+import SistemaHospital.Enum.Sexo;
+import SistemaHospital.Exceptions.EntidadeJaExiste;
+import SistemaHospital.Exceptions.EntidadeNaoExiste;
 
 import java.time.LocalDate;
 import java.util.*;

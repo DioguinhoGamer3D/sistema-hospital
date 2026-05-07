@@ -1,4 +1,4 @@
-package BancoDeDados.SistemaHospital;
+package SistemaHospital.Classes;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package BancoDeDados.SistemaHospital.Exceptions;
+package SistemaHospital.Exceptions;
 
 public class HospitalException extends RuntimeException {
     public HospitalException(String message) {

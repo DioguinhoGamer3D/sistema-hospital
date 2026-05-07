@@ -1,4 +1,4 @@
-package BancoDeDados.SistemaHospital.Enum;
+package SistemaHospital.Enum;
 
 public enum TipoEntidade {
     PACIENTE,
