@@ -1,4 +1,4 @@
-package BancoDeDados.SistemaHospital;
+package SistemaHospital.Classes;
 
 public class Medico {
     private static int contador = 1;

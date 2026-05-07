@@ -1,6 +1,10 @@
-package BancoDeDados.SistemaHospital;
+package SistemaHospital;
 
-import BancoDeDados.SistemaHospital.Enum.Sexo;
+import SistemaHospital.Classes.Consulta;
+import SistemaHospital.Classes.Medico;
+import SistemaHospital.Classes.Paciente;
+import SistemaHospital.Enum.Sexo;
+import SistemaHospital.Gerencias.GerenciaHospital;
 
 import java.time.LocalDate;
 
