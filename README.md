@@ -41,7 +41,7 @@ O **Sistema Hospital** é uma aplicação desktop desenvolvida em Java que centr
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/DioguinhoGamer3D/ProjetosAtoa.git
+git clone https://github.com/DioguinhoGamer3D/sistema-hospital.git
 
 # 2. Entre na pasta do projeto
 cd sistema-hospital
@@ -62,6 +62,7 @@ ProjetosAtoa/
 ├── src/
 │   └── main/
 │       └── java/        # Código-fonte principal
+│       └── test/        # Código de teste
 ├── pom.xml              # Configurações Maven
 └── README.md
 ```
