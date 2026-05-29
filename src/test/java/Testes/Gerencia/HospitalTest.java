@@ -4,7 +4,7 @@ import SistemaHospital.Enum.Sexo;
 import SistemaHospital.Exceptions.EntidadeJaExiste;
 import SistemaHospital.Exceptions.EntidadeNaoExiste;
 import SistemaHospital.Gerencias.GerenciaHospital;
-import SistemaHospital.Classes.Paciente;
+import SistemaHospital.Model.Paciente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

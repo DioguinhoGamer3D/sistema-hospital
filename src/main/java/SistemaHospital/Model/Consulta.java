@@ -1,4 +1,4 @@
-package SistemaHospital.Classes;
+package SistemaHospital.Model;
 
 import java.time.LocalDate;
 

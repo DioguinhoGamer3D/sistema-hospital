@@ -1,8 +1,8 @@
 package SistemaHospital.Gerencias;
 
-import SistemaHospital.Classes.Consulta;
-import SistemaHospital.Classes.Medico;
-import SistemaHospital.Classes.Paciente;
+import SistemaHospital.Model.Consulta;
+import SistemaHospital.Model.Medico;
+import SistemaHospital.Model.Paciente;
 import SistemaHospital.Enum.Sexo;
 import SistemaHospital.Exceptions.EntidadeJaExiste;
 import SistemaHospital.Exceptions.EntidadeNaoExiste;
@@ -10,6 +10,7 @@ import SistemaHospital.Exceptions.EntidadeNaoExiste;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 public interface Hospital {
@@ -40,4 +41,7 @@ public interface Hospital {
     void atualizarPaciente(int codP, Optional<String> nome,
                            Optional<String> CPF, Optional<Sexo> sexo, OptionalInt idade,
                            Optional<String> convenio) throws EntidadeNaoExiste;
+    public void atualizarMedico(int codM, Optional<String> nome, Optional<String> CPF,
+                                Optional<Sexo> sexo, Optional<String> especialidade,
+                                Optional<String> turno, OptionalDouble salario) throws EntidadeNaoExiste;
 }

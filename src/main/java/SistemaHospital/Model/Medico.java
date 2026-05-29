@@ -1,4 +1,4 @@
-package SistemaHospital.Classes;
+package SistemaHospital.Model;
 
 public class Medico {
     private static int contador = 1;
@@ -59,6 +59,18 @@ public class Medico {
 
     public void setSalario(double salario) {
         this.salario = salario;
+    }
+
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
+    }
+
+    public Enum getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(Enum sexo) {
+        this.sexo = sexo;
     }
 
     @Override

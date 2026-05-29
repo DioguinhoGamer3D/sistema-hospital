@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Médicos</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">🏥 Sistema Hospital</a>
+        <div class="navbar-nav">
+            <a class="nav-link text-white" href="/pacientes">Pacientes</a>
+            <a class="nav-link text-white" href="/medicos">Médicos</a>
+            <a class="nav-link text-white" href="/consultas">Consultas</a>
+            <a class="nav-link text-white" href="/relatorios">Relatórios</a>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <h1>Médicos</h1>
+
+    <a href="/medicos/novo" class="btn btn-primary mb-3">+ Novo Medico</a>
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Sexo</th>
+                <th>Especialidade</th>
+                <th>Turno</th>
+                <th>Salário</th>
+                <th>Editar</th>
+                <th>Remover</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${medicos}">
+                <td th:text="${m.codM}"></td>
+                <td th:text="${m.nome}"></td>
+                <td th:text="${m.CPF}"></td>
+                <td th:text="${m.sexo}"></td>
+                <td th:text="${m.especialidade}"></td>
+                <td th:text="${m.turno}"></td>
+                <td th:text="${m.salario}"></td>
+                <td>
+                    <a th:href="${'/medicos/' + m.codM + '/editar'}" class="btn btn-sm btn-warning">Editar</a>
+                </td>
+                <td>
+                    <form th:action="${'/medicos/' + m.codM + '/remover'}" method="post"
+                      onsubmit="return confirm('Remover médico?')">
+                    <button type="submit" class="btn btn-sm btn-danger">Remover</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

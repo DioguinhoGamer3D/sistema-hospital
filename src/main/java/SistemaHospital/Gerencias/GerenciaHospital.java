@@ -1,8 +1,8 @@
 package SistemaHospital.Gerencias;
 
-import SistemaHospital.Classes.Consulta;
-import SistemaHospital.Classes.Medico;
-import SistemaHospital.Classes.Paciente;
+import SistemaHospital.Model.Consulta;
+import SistemaHospital.Model.Medico;
+import SistemaHospital.Model.Paciente;
 import SistemaHospital.Enum.Sexo;
 import SistemaHospital.Exceptions.EntidadeJaExiste;
 import SistemaHospital.Exceptions.EntidadeNaoExiste;
@@ -98,6 +98,9 @@ public class GerenciaHospital implements Hospital {
         Medico medico = medicos.get(m.getCodM());
         if (medico == null) {
             throw new EntidadeNaoExiste("Medico", m.getCodM());
+        }
+        if (consultaJaExiste(paciente, medico, data)) {
+            throw new EntidadeJaExiste("Consulta", data);
         }
         Consulta nova = new Consulta(paciente, medico, data, diagnostico, preco);
         consultas.put(nova.getCodC(), nova);
@@ -313,6 +316,32 @@ public class GerenciaHospital implements Hospital {
         }
         if (convenio.isPresent()) {
             p.setConvenio(convenio.get());
+        }
+    }
+    public void atualizarMedico(int codM, Optional<String> nome, Optional<String> CPF,
+                                Optional<Sexo> sexo, Optional<String> especialidade,
+                                Optional<String> turno, OptionalDouble salario) throws EntidadeNaoExiste{
+        Medico m = medicos.get(codM);
+        if (m == null){
+            throw new EntidadeNaoExiste("Medico ", codM);
+        }
+        if (nome.isPresent()) {
+            m.setNome(nome.get());
+        }
+        if (CPF.isPresent()) {
+            m.setCPF(CPF.get());
+        }
+        if (sexo.isPresent()) {
+            m.setSexo(sexo.get());
+        }
+        if (especialidade.isPresent()) {
+            m.setEspecialidade(especialidade.get());
+        }
+        if (turno.isPresent()) {
+            m.setTurno(turno.get());
+        }
+        if (salario.isPresent()) {
+            m.setSalario(salario.getAsDouble());
         }
     }
 }
