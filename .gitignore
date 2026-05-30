@@ -41,4 +41,3 @@ build/
 ### Outros ###
 .idea/
 .env
-src/main/java/SistemaHospital/ConexaoDB.java
