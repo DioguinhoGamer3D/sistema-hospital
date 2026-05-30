@@ -40,4 +40,4 @@ build/
 
 ### Outros ###
 .idea/
-.env/
+.env
