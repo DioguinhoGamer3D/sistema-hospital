@@ -150,6 +150,60 @@ public class ConsultaRepository {
         }
     }
 
+    public List<Medico> medicoComMaisConsultas() {
+        String sql = """
+            SELECT m.*, COUNT(c.cod_c) as total
+            FROM medicos m
+            LEFT JOIN consultas c ON m.cod_m = c.cod_m
+            GROUP BY m.cod_m
+            ORDER BY total DESC
+            LIMIT 1
+            """;
+        List<Medico> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            int maxTotal = -1;
+            while (rs.next()) {
+                int total = rs.getInt("total");
+                if (maxTotal == -1) maxTotal = total;
+                if (total < maxTotal) break;
+                lista.add(medicoRepo.mapear(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar médico com mais consultas: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public List<Paciente> pacienteMaisFrequente() {
+        String sql = """
+            SELECT p.*, COUNT(c.cod_c) as total
+            FROM pacientes p
+            LEFT JOIN consultas c ON p.cod_p = c.cod_p
+            GROUP BY p.cod_p
+            ORDER BY total DESC
+            LIMIT 1
+            """;
+        List<Paciente> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            int maxTotal = -1;
+            while (rs.next()) {
+                int total = rs.getInt("total");
+                if (maxTotal == -1) maxTotal = total;
+                if (total < maxTotal) break;
+                lista.add(pacienteRepo.mapear(rs));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar paciente mais frequente: " + e.getMessage());
+        }
+        return lista;
+    }
+
     private Consulta mapear(ResultSet rs) throws SQLException {
         Paciente paciente = pacienteRepo.buscarPorCod(rs.getInt("cod_p"));
         Medico   medico   = medicoRepo.buscarPorCod(rs.getInt("cod_m"));

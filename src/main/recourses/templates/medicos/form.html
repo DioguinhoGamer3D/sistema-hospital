@@ -9,12 +9,17 @@
 <div class="container mt-4">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <h1 th:text="${titulo}">Título</h1>
+
+<div th:if="${erro}" style="color:red" th:text="${erro}"></div>
+
 <form th:action="${acao}" method="post">
     <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" value="" required>
+    <input type="text" id="nome" name="nome"
+           th:value="${medico != null ? medico.nome : ''}" required>
 
     <label for="CPF">CPF:</label>
-    <input type="text" id="CPF" name="CPF" value="" required>
+    <input type="text" id="CPF" name="CPF"
+           th:value="${medico != null ? medico.CPF : ''}" required>
 
     <label for="sexo">Sexo:</label>
     <select id="sexo" name="sexo" required>
@@ -27,13 +32,16 @@
     </select>
 
     <label for="especialidade">Especialidade:</label>
-    <input type="text" id="especialidade" name="especialidade" value="" required>
+    <input type="text" id="especialidade" name="especialidade"
+           th:value="${medico != null ? medico.especialidade : ''}" required>
 
     <label for="turno">Turno:</label>
-    <input type="text" id="turno" name="turno" value="" required>
+    <input type="text" id="turno" name="turno"
+           th:value="${medico != null ? medico.turno : ''}" required>
 
     <label for="salario">Salário:</label>
-    <input type="number" id="salario" name="salario" step="0.01" value="" required>
+    <input type="number" id="salario" name="salario" step="0.01"
+           th:value="${medico != null ? medico.salario : ''}" required>
 
     <button type="submit">Salvar</button>
 </form>

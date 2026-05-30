@@ -1,5 +1,7 @@
 package SistemaHospital.Model;
 
+import java.util.Objects;
+
 public class Medico {
     private static int contador = 1;
 
@@ -85,5 +87,17 @@ public class Medico {
                 ", Especialidade: " + especialidade + '\'' +
                 ", Turno:" + turno + '\'' +
                 ", Salário: " + salario;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Medico medico = (Medico) o;
+        return codM == medico.codM && Objects.equals(CPF, medico.CPF);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codM, CPF);
     }
 }

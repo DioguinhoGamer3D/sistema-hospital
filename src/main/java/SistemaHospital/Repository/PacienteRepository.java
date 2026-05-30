@@ -28,7 +28,10 @@ public class PacienteRepository {
             }
             return p;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar paciente: " + e.getMessage());
+            if (e.getSQLState().equals("23505")) {
+                throw new RuntimeException("CPF já cadastrado no sistema.");
+            }
+            throw new RuntimeException("Erro ao salvar médico: " + e.getMessage());
         }
     }
 
@@ -106,7 +109,7 @@ public class PacienteRepository {
         }
     }
 
-    private Paciente mapear(ResultSet rs) throws SQLException {
+    public Paciente mapear(ResultSet rs) throws SQLException {
         Paciente p = new Paciente(
                 rs.getString("nome"),
                 rs.getString("cpf"),

@@ -4,7 +4,6 @@ import SistemaHospital.Controller.ConsultaController;
 import SistemaHospital.Controller.PacienteController;
 import SistemaHospital.Controller.MedicoController;
 import SistemaHospital.Controller.RelatorioController;
-import SistemaHospital.Gerencias.GerenciaHospital;
 import SistemaHospital.Repository.ConsultaRepository;
 import SistemaHospital.Repository.MedicoRepository;
 import SistemaHospital.Repository.PacienteRepository;
@@ -17,7 +16,6 @@ public class App {
     }
 
     public static Javalin start(int porta) {
-        GerenciaHospital hospital = new GerenciaHospital();
 
         PacienteRepository pacienteRepo = new PacienteRepository();
         MedicoRepository   medicoRepo   = new MedicoRepository();

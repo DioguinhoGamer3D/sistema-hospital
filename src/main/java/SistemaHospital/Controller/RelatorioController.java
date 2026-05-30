@@ -26,6 +26,8 @@ public class RelatorioController {
     public void index(Context ctx) {
         Map<String, Object> model = new HashMap<>();
         model.put("faturamento",    consultaRepo.calcularFaturamento());
+        model.put("topMedicos",     consultaRepo.medicoComMaisConsultas());
+        model.put("topPacientes",   consultaRepo.pacienteMaisFrequente());
         model.put("totalPacientes", pacienteRepo.buscarTodos().size());
         model.put("totalMedicos",   medicoRepo.buscarTodos().size());
         model.put("totalConsultas", consultaRepo.buscarTodas().size());

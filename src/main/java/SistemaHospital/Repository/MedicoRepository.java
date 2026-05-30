@@ -27,8 +27,11 @@ public class MedicoRepository {
             if (rs.next()) m.setCodM(rs.getInt("cod_m"));
             return m;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar médico: " + e.getMessage());
+        if (e.getSQLState().equals("23505")) {
+            throw new RuntimeException("CPF já cadastrado no sistema.");
         }
+        throw new RuntimeException("Erro ao salvar médico: " + e.getMessage());
+    }
     }
 
     public List<Medico> buscarTodos() {
@@ -105,7 +108,7 @@ public class MedicoRepository {
         }
     }
 
-    private Medico mapear(ResultSet rs) throws SQLException {
+    public Medico mapear(ResultSet rs) throws SQLException {
         Medico m = new Medico(
                 rs.getString("nome"),
                 rs.getString("cpf"),
