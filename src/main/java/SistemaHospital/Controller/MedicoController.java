@@ -1,86 +1,98 @@
 package SistemaHospital.Controller;
 
 import SistemaHospital.Enum.Sexo;
-import SistemaHospital.Exceptions.HospitalException;
-import SistemaHospital.Gerencias.GerenciaHospital;
+import SistemaHospital.Model.Medico;
+import SistemaHospital.Repository.MedicoRepository;
 import SistemaHospital.ThymeleafConfig;
 import io.javalin.http.Context;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MedicoController {
-    private final GerenciaHospital hospital;
 
-    public MedicoController(GerenciaHospital hospital) {
-        this.hospital = hospital;
+    private final MedicoRepository repo;
+
+    public MedicoController(MedicoRepository repo) {
+        this.repo = repo;
     }
 
     public void listar(Context ctx) {
-        Map<String, Object> model = Map.of("medicos", hospital.todosMedicos());
+        Map<String, Object> model = new HashMap<>();
+        model.put("medicos", repo.buscarTodos());
         ctx.html(ThymeleafConfig.render("medicos/lista", model));
     }
+
     public void formNovo(Context ctx) {
         ctx.html(ThymeleafConfig.render("medicos/form", Map.of(
-                "sexos", Sexo.values(),
-                "acao", "/medicos/novo",
+                "sexos",  Sexo.values(),
+                "acao",   "/medicos/novo",
                 "titulo", "Novo Médico"
         )));
     }
+
     public void cadastrar(Context ctx) {
-        try{
-            hospital.cadastrarMedico(
+        try {
+            Medico m = new Medico(
                     ctx.formParam("nome"),
                     ctx.formParam("CPF"),
                     Sexo.valueOf(ctx.formParam("sexo")),
                     ctx.formParam("especialidade"),
                     ctx.formParam("turno"),
-                    Double.parseDouble(Objects.requireNonNull(ctx.formParam("salario")))
+                    Double.parseDouble(ctx.formParam("salario"))
             );
+            repo.salvar(m);
             ctx.redirect("/medicos");
-        } catch (HospitalException e){
-            Map<String, Object> model = Map.of(
-                    "acao", "/medicos/novo",
-                    "titulo", "Novo Médico",
-                    "erro", e.getMessage()
-            );
+        } catch (Exception e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put("sexos",  Sexo.values());
+            model.put("acao",   "/medicos/novo");
+            model.put("titulo", "Novo Médico");
+            model.put("erro",   e.getMessage());
             ctx.html(ThymeleafConfig.render("medicos/form", model));
         }
     }
-    public void remover(Context ctx) {
-        try {
-            hospital.removerMedico(Integer.parseInt(ctx.pathParam("cod")));
-        } catch (HospitalException ignored) {}
+
+    public void formEditar(Context ctx) {
+        int cod = Integer.parseInt(ctx.pathParam("cod"));
+        Medico m = repo.buscarPorCod(cod);
+        if (m == null) { ctx.redirect("/medicos"); return; }
+        Map<String, Object> model = new HashMap<>();
+        model.put("medico",  m);
+        model.put("sexos",   Sexo.values());
+        model.put("acao",    "/medicos/" + cod + "/editar");
+        model.put("titulo",  "Editar Médico");
+        ctx.html(ThymeleafConfig.render("medicos/form", model));
+    }
+
+    public void atualizar(Context ctx) {
+        int cod = Integer.parseInt(ctx.pathParam("cod"));
+        Medico m = repo.buscarPorCod(cod);
+        if (m == null) { ctx.redirect("/medicos"); return; }
+        m.setNome(ctx.formParam("nome"));
+        m.setCPF(ctx.formParam("CPF"));
+        m.setSexo(Sexo.valueOf(ctx.formParam("sexo")));
+        m.setEspecialidade(ctx.formParam("especialidade"));
+        m.setTurno(ctx.formParam("turno"));
+        m.setSalario(Double.parseDouble(ctx.formParam("salario")));
+        repo.atualizar(m);
         ctx.redirect("/medicos");
     }
-    public void formEditar(Context ctx) {
-        try {
-            int cod = Integer.parseInt(ctx.pathParam("cod"));
-            var medico = hospital.pesquisarMedico(cod);
-            Map<String, Object> model = new HashMap<>();
-            model.put("medico", medico);
-            model.put("sexos", Sexo.values());
-            model.put("acao", "/medicos/" + cod + "/editar");
-            model.put("titulo", "Editar Médico");
-            ctx.html(ThymeleafConfig.render("medicos/form", model));
-        } catch (HospitalException e) {
-            ctx.redirect("/medicos");
-        }
+
+    public void remover(Context ctx) {
+        repo.remover(Integer.parseInt(ctx.pathParam("cod")));
+        ctx.redirect("/medicos");
     }
-    public void atualizar(Context ctx) {
-        try {
-            int cod = Integer.parseInt(ctx.pathParam("cod"));
-            hospital.atualizarMedico(
-                    cod,
-                    Optional.ofNullable(ctx.formParam("nome")),
-                    Optional.ofNullable(ctx.formParam("CPF")),
-                    Optional.ofNullable(ctx.formParam("sexo")).map(Sexo::valueOf),
-                    Optional.ofNullable(ctx.formParam("especialidade")),
-                    Optional.ofNullable(ctx.formParam("turno")),
-                    OptionalDouble.of(Double.parseDouble(ctx.formParam("salario")))
-            );
-            ctx.redirect("/medicos");
-        } catch (HospitalException e) {
-            ctx.redirect("/medicos");
+
+    public void buscarPorEspecialidade(Context ctx) {
+        String esp = ctx.queryParam("especialidade");
+        Map<String, Object> model = new HashMap<>();
+        if (esp != null && !esp.isBlank()) {
+            var lista = repo.buscarPorEspecialidade(esp);
+            model.put("resultados",    lista);
+            model.put("especialidade", esp);
+            model.put("vazio",         lista.isEmpty());
         }
+        ctx.html(ThymeleafConfig.render("medicos/especialidade", model));
     }
 }

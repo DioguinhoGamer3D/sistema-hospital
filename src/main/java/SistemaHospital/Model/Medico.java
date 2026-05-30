@@ -25,6 +25,10 @@ public class Medico {
         return codM;
     }
 
+    public void setCodM(int codM) {
+        this.codM = codM;
+    }
+
     public String getCPF() {
         return CPF;
     }

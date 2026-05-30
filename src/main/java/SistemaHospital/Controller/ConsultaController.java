@@ -1,7 +1,11 @@
 package SistemaHospital.Controller;
 
-import SistemaHospital.Exceptions.HospitalException;
-import SistemaHospital.Gerencias.GerenciaHospital;
+import SistemaHospital.Model.Consulta;
+import SistemaHospital.Model.Medico;
+import SistemaHospital.Model.Paciente;
+import SistemaHospital.Repository.ConsultaRepository;
+import SistemaHospital.Repository.MedicoRepository;
+import SistemaHospital.Repository.PacienteRepository;
 import SistemaHospital.ThymeleafConfig;
 import io.javalin.http.Context;
 
@@ -11,22 +15,28 @@ import java.util.Map;
 
 public class ConsultaController {
 
-    private final GerenciaHospital hospital;
+    private final ConsultaRepository  consultaRepo;
+    private final PacienteRepository  pacienteRepo;
+    private final MedicoRepository    medicoRepo;
 
-    public ConsultaController(GerenciaHospital hospital) {
-        this.hospital = hospital;
+    public ConsultaController(ConsultaRepository consultaRepo,
+                              PacienteRepository pacienteRepo,
+                              MedicoRepository   medicoRepo) {
+        this.consultaRepo = consultaRepo;
+        this.pacienteRepo = pacienteRepo;
+        this.medicoRepo   = medicoRepo;
     }
 
     public void listar(Context ctx) {
         Map<String, Object> model = new HashMap<>();
-        model.put("consultas", hospital.todasConsultas());
+        model.put("consultas", consultaRepo.buscarTodas());
         ctx.html(ThymeleafConfig.render("consultas/lista", model));
     }
 
     public void formNova(Context ctx) {
         ctx.html(ThymeleafConfig.render("consultas/form", Map.of(
-                "pacientes", hospital.todosPacientes(),
-                "medicos",   hospital.todosMedicos(),
+                "pacientes", pacienteRepo.buscarTodos(),
+                "medicos",   medicoRepo.buscarTodos(),
                 "titulo",    "Nova Consulta",
                 "acao",      "/consultas/nova"
         )));
@@ -34,27 +44,63 @@ public class ConsultaController {
 
     public void cadastrar(Context ctx) {
         try {
-            var paciente = hospital.pesquisarPaciente(Integer.parseInt(ctx.formParam("codP")));
-            var medico   = hospital.pesquisarMedico(Integer.parseInt(ctx.formParam("codM")));
-            var data     = LocalDate.parse(ctx.formParam("data"));
-            double preco = Double.parseDouble(ctx.formParam("preco"));
-            hospital.cadastrarConsulta(paciente, medico, data, ctx.formParam("diagnostico"), preco);
+            Paciente p    = pacienteRepo.buscarPorCod(Integer.parseInt(ctx.formParam("codP")));
+            Medico   m    = medicoRepo.buscarPorCod(Integer.parseInt(ctx.formParam("codM")));
+            LocalDate data = LocalDate.parse(ctx.formParam("data"));
+            double preco  = Double.parseDouble(ctx.formParam("preco"));
+            Consulta c    = new Consulta(p, m, data, ctx.formParam("diagnostico"), preco);
+            consultaRepo.salvar(c);
             ctx.redirect("/consultas");
         } catch (Exception e) {
             Map<String, Object> model = new HashMap<>();
-            model.put("pacientes",  hospital.todosPacientes());
-            model.put("medicos",    hospital.todosMedicos());
-            model.put("titulo",     "Nova Consulta");
-            model.put("acao",       "/consultas/nova");
-            model.put("erro",       e.getMessage());
+            model.put("pacientes", pacienteRepo.buscarTodos());
+            model.put("medicos",   medicoRepo.buscarTodos());
+            model.put("titulo",    "Nova Consulta");
+            model.put("acao",      "/consultas/nova");
+            model.put("erro",      e.getMessage());
+            ctx.html(ThymeleafConfig.render("consultas/form", model));
+        }
+    }
+
+    public void formEditar(Context ctx) {
+        Consulta c = consultaRepo.buscarPorCod(Integer.parseInt(ctx.pathParam("cod")));
+        ctx.html(ThymeleafConfig.render("consultas/form", Map.of(
+                "consulta", c,
+                "pacientes", pacienteRepo.buscarTodos(),
+                "medicos",   medicoRepo.buscarTodos(),
+                "titulo",    "Editar Consulta",
+                "acao",      "/consultas/" + c.getCodC() + "/editar"
+        )));
+    }
+
+    public void atualizar(Context ctx) {
+        try {
+            Consulta c = consultaRepo.buscarPorCod(Integer.parseInt(ctx.pathParam("cod")));
+            Paciente p = pacienteRepo.buscarPorCod(Integer.parseInt(ctx.formParam("codP")));
+            Medico   m = medicoRepo.buscarPorCod(Integer.parseInt(ctx.formParam("codM")));
+            LocalDate data = LocalDate.parse(ctx.formParam("data"));
+            double preco  = Double.parseDouble(ctx.formParam("preco"));
+            c.setPaciente(p);
+            c.setMedico(m);
+            c.setData(data);
+            c.setDiagnostico(ctx.formParam("diagnostico"));
+            c.setPreco(preco);
+            consultaRepo.atualizar(c);
+            ctx.redirect("/consultas");
+        } catch (Exception e) {
+            Map<String, Object> model = new HashMap<>();
+            model.put("consulta", consultaRepo.buscarPorCod(Integer.parseInt(ctx.pathParam("cod"))));
+            model.put("pacientes", pacienteRepo.buscarTodos());
+            model.put("medicos",   medicoRepo.buscarTodos());
+            model.put("titulo",    "Editar Consulta");
+            model.put("acao",      "/consultas/" + ctx.pathParam("cod") + "/editar");
+            model.put("erro",      e.getMessage());
             ctx.html(ThymeleafConfig.render("consultas/form", model));
         }
     }
 
     public void cancelar(Context ctx) {
-        try {
-            hospital.cancelarConsulta(Integer.parseInt(ctx.pathParam("cod")));
-        } catch (HospitalException ignored) {}
+        consultaRepo.remover(Integer.parseInt(ctx.pathParam("cod")));
         ctx.redirect("/consultas");
     }
 }

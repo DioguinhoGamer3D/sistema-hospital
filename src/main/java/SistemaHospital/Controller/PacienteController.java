@@ -1,93 +1,96 @@
 package SistemaHospital.Controller;
 
 import SistemaHospital.Enum.Sexo;
-import SistemaHospital.Exceptions.HospitalException;
-import SistemaHospital.Gerencias.GerenciaHospital;
+import SistemaHospital.Model.Paciente;
+import SistemaHospital.Repository.PacienteRepository;
 import SistemaHospital.ThymeleafConfig;
 import io.javalin.http.Context;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
 
 public class PacienteController {
 
-    private final GerenciaHospital hospital;
+    private final PacienteRepository repo;
 
-    public PacienteController(GerenciaHospital hospital) {
-        this.hospital = hospital;
+    public PacienteController(PacienteRepository repo) {
+        this.repo = repo;
     }
 
     public void listar(Context ctx) {
         Map<String, Object> model = new HashMap<>();
-        model.put("pacientes", hospital.todosPacientes());
+        model.put("pacientes", repo.buscarTodos());
         ctx.html(ThymeleafConfig.render("pacientes/lista", model));
     }
+
     public void formNovo(Context ctx) {
         ctx.html(ThymeleafConfig.render("pacientes/form", Map.of(
-                "sexos", Sexo.values(),
-                "acao", "/pacientes/novo",
+                "sexos",  Sexo.values(),
+                "acao",   "/pacientes/novo",
                 "titulo", "Novo Paciente"
         )));
     }
 
     public void cadastrar(Context ctx) {
         try {
-            hospital.cadastrarPaciente(
+            Paciente p = new Paciente(
                     ctx.formParam("nome"),
                     ctx.formParam("cpf"),
                     Sexo.valueOf(ctx.formParam("sexo")),
                     Integer.parseInt(ctx.formParam("idade")),
                     ctx.formParam("convenio")
             );
+            repo.salvar(p);
             ctx.redirect("/pacientes");
-        } catch (HospitalException e) {
+        } catch (Exception e) {
             Map<String, Object> model = new HashMap<>();
-            model.put("sexos", Sexo.values());
-            model.put("acao", "/pacientes/novo");
+            model.put("sexos",  Sexo.values());
+            model.put("acao",   "/pacientes/novo");
             model.put("titulo", "Novo Paciente");
-            model.put("erro", e.getMessage());
+            model.put("erro",   e.getMessage());
             ctx.html(ThymeleafConfig.render("pacientes/form", model));
         }
     }
-    public void remover(Context ctx) {
-        try {
-            hospital.removerPaciente(Integer.parseInt(ctx.pathParam("cod")));
-        } catch (HospitalException ignored) {}
-        ctx.redirect("/pacientes");
-    }
+
     public void formEditar(Context ctx) {
-        try {
-            int cod = Integer.parseInt(ctx.pathParam("cod"));
-            var paciente = hospital.pesquisarPaciente(cod);
-            Map<String, Object> model = new HashMap<>();
-            model.put("paciente", paciente);
-            model.put("sexos", Sexo.values());
-            model.put("acao", "/pacientes/" + cod + "/editar");
-            model.put("titulo", "Editar Paciente");
-            ctx.html(ThymeleafConfig.render("pacientes/form", model));
-        } catch (HospitalException e) {
-            ctx.redirect("/pacientes");
-        }
+        int cod = Integer.parseInt(ctx.pathParam("cod"));
+        Paciente p = repo.buscarPorCod(cod);
+        if (p == null) { ctx.redirect("/pacientes"); return; }
+        Map<String, Object> model = new HashMap<>();
+        model.put("paciente", p);
+        model.put("sexos",    Sexo.values());
+        model.put("acao",     "/pacientes/" + cod + "/editar");
+        model.put("titulo",   "Editar Paciente");
+        ctx.html(ThymeleafConfig.render("pacientes/form", model));
     }
 
     public void atualizar(Context ctx) {
         int cod = Integer.parseInt(ctx.pathParam("cod"));
-        try {
-            hospital.atualizarPaciente(
-                    cod,
-                    Optional.ofNullable(ctx.formParam("nome")),
-                    Optional.ofNullable(ctx.formParam("cpf")),
-                    Optional.ofNullable(ctx.formParam("sexo")).map(Sexo::valueOf),
-                    ctx.formParam("idade") != null
-                            ? OptionalInt.of(Integer.parseInt(ctx.formParam("idade")))
-                            : OptionalInt.empty(),
-                    Optional.ofNullable(ctx.formParam("convenio"))
-            );
-            ctx.redirect("/pacientes");
-        } catch (HospitalException e) {
-            ctx.redirect("/pacientes");
+        Paciente p = repo.buscarPorCod(cod);
+        if (p == null) { ctx.redirect("/pacientes"); return; }
+        p.setNome(ctx.formParam("nome"));
+        p.setCPF(ctx.formParam("cpf"));
+        p.setSexo(Sexo.valueOf(ctx.formParam("sexo")));
+        p.setIdade(Integer.parseInt(ctx.formParam("idade")));
+        p.setConvenio(ctx.formParam("convenio"));
+        repo.atualizar(p);
+        ctx.redirect("/pacientes");
+    }
+
+    public void remover(Context ctx) {
+        repo.remover(Integer.parseInt(ctx.pathParam("cod")));
+        ctx.redirect("/pacientes");
+    }
+
+    public void buscarPorCpf(Context ctx) {
+        String cpf = ctx.queryParam("cpf");
+        Map<String, Object> model = new HashMap<>();
+        if (cpf != null && !cpf.isBlank()) {
+            Paciente p = repo.buscarPorCpf(cpf);
+            if (p != null) model.put("resultado", p);
+            else model.put("erro", "Paciente não encontrado para o CPF: " + cpf);
+            model.put("cpf", cpf);
         }
+        ctx.html(ThymeleafConfig.render("pacientes/buscar", model));
     }
 }

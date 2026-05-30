@@ -25,12 +25,24 @@ public class Consulta {
         return medico;
     }
 
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
+
+    public void setMedico(Medico medico) {
+        this.medico = medico;
+    }
+
     public Paciente getPaciente() {
         return paciente;
     }
 
     public int getCodC(){
         return this.codC;
+    }
+
+    public void setCodC(int codC) {
+        this.codC = codC;
     }
 
     public LocalDate getData() {

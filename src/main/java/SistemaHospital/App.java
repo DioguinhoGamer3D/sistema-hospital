@@ -5,6 +5,9 @@ import SistemaHospital.Controller.PacienteController;
 import SistemaHospital.Controller.MedicoController;
 import SistemaHospital.Controller.RelatorioController;
 import SistemaHospital.Gerencias.GerenciaHospital;
+import SistemaHospital.Repository.ConsultaRepository;
+import SistemaHospital.Repository.MedicoRepository;
+import SistemaHospital.Repository.PacienteRepository;
 import io.javalin.Javalin;
 
 public class App {
@@ -16,11 +19,15 @@ public class App {
     public static Javalin start(int porta) {
         GerenciaHospital hospital = new GerenciaHospital();
 
-        PacienteController  pacienteController  = new PacienteController(hospital);
-        MedicoController    medicoController    = new MedicoController(hospital);
-        ConsultaController  consultaController  = new ConsultaController(hospital);
-        RelatorioController relatorioController = new RelatorioController(hospital);
+        PacienteRepository pacienteRepo = new PacienteRepository();
+        MedicoRepository   medicoRepo   = new MedicoRepository();
+        ConsultaRepository consultaRepo  = new ConsultaRepository(pacienteRepo, medicoRepo);
 
+
+        MedicoController   medicoController = new MedicoController(medicoRepo);
+        PacienteController pacienteController = new PacienteController(pacienteRepo);
+        ConsultaController  consultaController  = new ConsultaController(consultaRepo, pacienteRepo, medicoRepo);
+        RelatorioController relatorioController = new RelatorioController(pacienteRepo, medicoRepo, consultaRepo);
         Javalin app = Javalin.create();
 
         app.get("/pacientes",               pacienteController::listar);
@@ -41,6 +48,8 @@ public class App {
         app.get ("/consultas/nova",           consultaController::formNova);
         app.post("/consultas/nova",           consultaController::cadastrar);
         app.post("/consultas/{cod}/cancelar", consultaController::cancelar);
+        app.get("/consultas/{cod}/editar",  consultaController::formEditar);
+        app.post("/consultas/{cod}/editar",  consultaController::atualizar);
 
         app.get("/relatorios", relatorioController::index);
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Paciente {
     private static int contador = 1;
 
-    private final int codP;
+    private int codP;
     private String nome;
     private String CPF;
     private Enum sexo;
@@ -53,6 +53,10 @@ public class Paciente {
     }
     public String getConvenio(){
         return this.convenio;
+    }
+
+    public void setCodP(int codP) {
+        this.codP = codP;
     }
 
     @Override
