@@ -41,4 +41,3 @@ build/
 ### Outros ###
 .idea/
 .env
-init.sql
