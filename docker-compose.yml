@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    container_name: hospital-db
+    environment:
+      POSTGRES_DB: hospital
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    build: .
+    container_name: hospital-app
+    ports:
+      - "7070:7070"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/hospital
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

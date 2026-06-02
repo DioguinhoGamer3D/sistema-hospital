@@ -1,0 +1,23 @@
+# Maven
+target/
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Git
+.git/
+.gitignore
+
+# Testes
+src/test/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -8,16 +8,24 @@ import java.sql.SQLException;
 
 public class ConexaoDB {
 
-    private static final Dotenv dotenv  = Dotenv.load();
-    private static final String URL     = dotenv.get("DB_URL");
-    private static final String USUARIO = dotenv.get("DB_USER");
-    private static final String SENHA   = dotenv.get("DB_PASS");
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
     public static Connection conectar() {
+        String url   = get("DB_URL",      "jdbc:postgresql://localhost:5432/hospital");
+        String user  = get("DB_USER",     "postgres");
+        String senha = get("DB_PASSWORD", "");
         try {
-            return DriverManager.getConnection(URL, USUARIO, SENHA);
+            return DriverManager.getConnection(url, user, senha);
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao conectar com o banco: " + e.getMessage());
         }
+    }
+
+    private static String get(String key, String defaultValue) {
+        String env = System.getenv(key);
+        if (env != null) return env;
+        String dot = dotenv.get(key, null);
+        if (dot != null) return dot;
+        return defaultValue;
     }
 }
