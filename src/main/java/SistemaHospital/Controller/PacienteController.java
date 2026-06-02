@@ -18,8 +18,20 @@ public class PacienteController {
     }
 
     public void listar(Context ctx) {
+        String busca   = ctx.queryParam("busca");
+        String tipo    = ctx.queryParam("tipo");
         Map<String, Object> model = new HashMap<>();
-        model.put("pacientes", repo.buscarTodos());
+
+        if (busca != null && !busca.isBlank()) {
+            var lista = "convenio".equals(tipo)
+                    ? repo.buscarPorConvenio(busca)
+                    : repo.buscarPorNome(busca);
+            model.put("pacientes", lista);
+            model.put("busca", busca);
+            model.put("tipo",  tipo);
+        } else {
+            model.put("pacientes", repo.buscarTodos());
+        }
         ctx.html(ThymeleafConfig.render("pacientes/lista", model));
     }
 

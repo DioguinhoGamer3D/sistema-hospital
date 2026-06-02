@@ -22,6 +22,24 @@
 
     <h1>Pacientes</h1>
 
+    <form method="get" action="/pacientes" class="row g-2 mb-3 align-items-center">
+        <div class="col-auto">
+            <select name="tipo" class="form-select">
+                <option value="nome"     th:selected="${tipo == 'nome' or tipo == null}">Nome</option>
+                <option value="convenio" th:selected="${tipo == 'convenio'}">Convênio</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="text" name="busca" class="form-control"
+                   placeholder="Buscar..."
+                   th:value="${busca != null ? busca : ''}"/>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <a href="/pacientes" class="btn btn-secondary">Limpar</a>
+        </div>
+    </form>
+
     <a href="/pacientes/novo" class="btn btn-primary mb-3">+ Novo Paciente</a>
 
     <table class="table table-bordered table-hover table-striped">
@@ -56,5 +74,10 @@
         </tbody>
     </table>
 </div>
+<script>
+    document.querySelector('select[name="tipo"]').addEventListener('change', function() {
+        document.querySelector('input[name="busca"]').value = '';
+    });
+</script>
 </body>
 </html>

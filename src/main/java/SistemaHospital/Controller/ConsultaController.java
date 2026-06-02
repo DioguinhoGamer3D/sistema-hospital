@@ -28,8 +28,31 @@ public class ConsultaController {
     }
 
     public void listar(Context ctx) {
+        String tipo  = ctx.queryParam("tipo");
+        String valor = ctx.queryParam("valor");
         Map<String, Object> model = new HashMap<>();
-        model.put("consultas", consultaRepo.buscarTodas());
+
+        if (tipo != null && valor != null && !valor.isBlank()) {
+            try {
+                var lista = switch (tipo) {
+                    case "paciente" -> consultaRepo.buscarPorPaciente(Integer.parseInt(valor));
+                    case "medico"   -> consultaRepo.buscarPorMedico(Integer.parseInt(valor));
+                    case "data"     -> consultaRepo.buscarPorData(LocalDate.parse(valor));
+                    default         -> consultaRepo.buscarTodas();
+                };
+                model.put("consultas", lista);
+            } catch (Exception e) {
+                model.put("erro", e.getMessage());
+                model.put("consultas", consultaRepo.buscarTodas());
+            }
+        } else {
+            model.put("consultas", consultaRepo.buscarTodas());
+        }
+
+        model.put("pacientes", pacienteRepo.buscarTodos());
+        model.put("medicos",   medicoRepo.buscarTodos());
+        model.put("tipo",      tipo);
+        model.put("valor",     valor);
         ctx.html(ThymeleafConfig.render("consultas/lista", model));
     }
 

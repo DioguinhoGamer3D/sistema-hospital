@@ -62,6 +62,21 @@ public class MedicoRepository {
         return null;
     }
 
+    public List<Medico> buscarPorNome(String nome) {
+        String sql = "SELECT * FROM medicos WHERE nome ILIKE ?";
+        List<Medico> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + nome + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar por nome: " + e.getMessage());
+        }
+        return lista;
+    }
+
     public List<Medico> buscarPorEspecialidade(String especialidade) {
         String sql = "SELECT * FROM medicos WHERE especialidade ILIKE ?";
         List<Medico> lista = new ArrayList<>();
@@ -73,6 +88,21 @@ public class MedicoRepository {
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar por especialidade: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public List<Medico> buscarPorTurno(String turno) {
+        String sql = "SELECT * FROM medicos WHERE turno ILIKE ?";
+        List<Medico> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + turno + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar por turno: " + e.getMessage());
         }
         return lista;
     }

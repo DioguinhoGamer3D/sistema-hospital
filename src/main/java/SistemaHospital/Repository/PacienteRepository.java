@@ -109,6 +109,36 @@ public class PacienteRepository {
         }
     }
 
+    public List<Paciente> buscarPorNome(String nome) {
+        String sql = "SELECT * FROM pacientes WHERE nome ILIKE ?";
+        List<Paciente> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + nome + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar pacientes por nome: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public List<Paciente> buscarPorConvenio(String convenio) {
+        String sql = "SELECT * FROM pacientes WHERE convenio ILIKE ?";
+        List<Paciente> lista = new ArrayList<>();
+        try (Connection conn = ConexaoDB.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + convenio + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) lista.add(mapear(rs));
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar pacientes por convênio: " + e.getMessage());
+        }
+        return lista;
+    }
+
     public Paciente mapear(ResultSet rs) throws SQLException {
         Paciente p = new Paciente(
                 rs.getString("nome"),

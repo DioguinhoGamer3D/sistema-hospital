@@ -18,8 +18,19 @@ public class MedicoController {
     }
 
     public void listar(Context ctx) {
+        String busca   = ctx.queryParam("busca");
+        String tipo    = ctx.queryParam("tipo");
         Map<String, Object> model = new HashMap<>();
-        model.put("medicos", repo.buscarTodos());
+        if (busca != null && !busca.isBlank()) {
+            var lista = "especialidade".equals(tipo)
+                    ? repo.buscarPorEspecialidade(busca)
+                    : repo.buscarPorNome(busca);
+            model.put("medicos", lista);
+            model.put("busca", busca);
+            model.put("tipo",  tipo);
+        } else {
+            model.put("medicos", repo.buscarTodos());
+        }
         ctx.html(ThymeleafConfig.render("medicos/lista", model));
     }
 
@@ -84,15 +95,4 @@ public class MedicoController {
         ctx.redirect("/medicos");
     }
 
-    public void buscarPorEspecialidade(Context ctx) {
-        String esp = ctx.queryParam("especialidade");
-        Map<String, Object> model = new HashMap<>();
-        if (esp != null && !esp.isBlank()) {
-            var lista = repo.buscarPorEspecialidade(esp);
-            model.put("resultados",    lista);
-            model.put("especialidade", esp);
-            model.put("vazio",         lista.isEmpty());
-        }
-        ctx.html(ThymeleafConfig.render("medicos/especialidade", model));
-    }
 }

@@ -22,6 +22,73 @@
 
 <h1>Consultas</h1>
 
+    <form method="get" action="/consultas" class="row g-2 mb-3 align-items-center">
+        <div class="col-auto">
+            <select name="tipo" id="tipo-filtro" class="form-select" onchange="atualizarFiltro()">
+                <option value="">Filtrar por...</option>
+                <option value="paciente" th:selected="${tipo == 'paciente'}">Paciente</option>
+                <option value="medico"   th:selected="${tipo == 'medico'}">Médico</option>
+                <option value="data"     th:selected="${tipo == 'data'}">Data</option>
+            </select>
+        </div>
+
+        <!-- Select de Pacientes -->
+        <div class="col-auto" id="campo-paciente" style="display:none">
+            <select name="valor" class="form-select">
+                <option value="">Selecione um paciente...</option>
+                <option th:each="p : ${pacientes}"
+                        th:value="${p.codP}"
+                        th:text="${p.nome}"
+                        th:selected="${tipo == 'paciente' and valor == p.codP.toString()}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Select de Médicos -->
+        <div class="col-auto" id="campo-medico" style="display:none">
+            <select name="valor" class="form-select">
+                <option value="">Selecione um médico...</option>
+                <option th:each="m : ${medicos}"
+                        th:value="${m.codM}"
+                        th:text="${m.nome}"
+                        th:selected="${tipo == 'medico' and valor == m.codM.toString()}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Input de Data -->
+        <div class="col-auto" id="campo-data" style="display:none">
+            <input type="date" name="valor" class="form-control"
+                   th:value="${tipo == 'data' ? valor : ''}"/>
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="/consultas" class="btn btn-secondary">Limpar</a>
+        </div>
+    </form>
+
+    <script>
+        function atualizarFiltro() {
+            const tipo = document.getElementById('tipo-filtro').value;
+
+            const campoPaciente = document.getElementById('campo-paciente');
+            const campoMedico   = document.getElementById('campo-medico');
+            const campoData     = document.getElementById('campo-data');
+
+            campoPaciente.style.display = tipo === 'paciente' ? 'block' : 'none';
+            campoMedico.style.display   = tipo === 'medico'   ? 'block' : 'none';
+            campoData.style.display     = tipo === 'data'     ? 'block' : 'none';
+
+            // desabilita os campos escondidos para não serem enviados no form
+            campoPaciente.querySelector('select').disabled = tipo !== 'paciente';
+            campoMedico.querySelector('select').disabled   = tipo !== 'medico';
+            campoData.querySelector('input').disabled      = tipo !== 'data';
+        }
+
+        atualizarFiltro();
+    </script>
+
     <a href="/consultas/nova" class="btn btn-primary mb-3">+ Nova Consulta</a>
         <table class="table table-bordered table-hover table-striped">
         <thead>
