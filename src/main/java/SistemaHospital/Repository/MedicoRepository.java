@@ -1,8 +1,10 @@
 package SistemaHospital.Repository;
 
 import SistemaHospital.ConexaoDB;
-import SistemaHospital.Enum.Sexo;
+import SistemaHospital.Uteis.Enum.Sexo;
 import SistemaHospital.Model.Medico;
+import SistemaHospital.Uteis.Exceptions.ErroDeServidor;
+import SistemaHospital.Uteis.Exceptions.RecursoNaoEncontrado;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class MedicoRepository {
         if (e.getSQLState().equals("23505")) {
             throw new RuntimeException("CPF já cadastrado no sistema.");
         }
-        throw new RuntimeException("Erro ao salvar médico: " + e.getMessage());
+        throw new ErroDeServidor("Erro ao salvar médico: " + e.getMessage());
     }
     }
 
@@ -43,7 +45,7 @@ public class MedicoRepository {
 
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar médicos: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar médicos: " + e.getMessage());
         }
         return lista;
     }
@@ -56,10 +58,10 @@ public class MedicoRepository {
             stmt.setInt(1, cod);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return mapear(rs);
+            throw new RecursoNaoEncontrado("Médico", cod);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar médico: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar médico: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Medico> buscarPorNome(String nome) {
@@ -72,7 +74,7 @@ public class MedicoRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar por nome: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar por nome: " + e.getMessage());
         }
         return lista;
     }
@@ -87,7 +89,7 @@ public class MedicoRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar por especialidade: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar por especialidade: " + e.getMessage());
         }
         return lista;
     }
@@ -102,7 +104,7 @@ public class MedicoRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar por turno: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar por turno: " + e.getMessage());
         }
         return lista;
     }
@@ -122,7 +124,7 @@ public class MedicoRepository {
             stmt.setInt   (7, m.getCodM());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar médico: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao atualizar médico: " + e.getMessage());
         }
     }
 
@@ -134,7 +136,7 @@ public class MedicoRepository {
             stmt.setInt(1, cod);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao remover médico: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao remover médico: " + e.getMessage());
         }
     }
 

@@ -7,7 +7,13 @@ import SistemaHospital.Controller.RelatorioController;
 import SistemaHospital.Repository.ConsultaRepository;
 import SistemaHospital.Repository.MedicoRepository;
 import SistemaHospital.Repository.PacienteRepository;
+import SistemaHospital.Uteis.Exceptions.ErroDeServidor;
+import SistemaHospital.Uteis.Exceptions.RecursoNaoEncontrado;
 import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class App {
 
@@ -26,7 +32,10 @@ public class App {
         PacienteController pacienteController = new PacienteController(pacienteRepo);
         ConsultaController  consultaController  = new ConsultaController(consultaRepo, pacienteRepo, medicoRepo);
         RelatorioController relatorioController = new RelatorioController(pacienteRepo, medicoRepo, consultaRepo);
-        Javalin app = Javalin.create();
+
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add("/static", Location.CLASSPATH);
+        });
 
         app.get("/pacientes",               pacienteController::listar);
         app.get("/pacientes/novo",          pacienteController::formNovo);
@@ -50,6 +59,24 @@ public class App {
         app.post("/consultas/{cod}/editar",  consultaController::atualizar);
 
         app.get("/relatorios", relatorioController::index);
+
+        app.exception(RecursoNaoEncontrado.class, (e, ctx) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("mensagem", e.getMessage());
+            ctx.status(404).html(ThymeleafConfig.render("erro404", model));
+        });
+
+        app.exception(ErroDeServidor.class, (e, ctx) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("mensagem", e.getMessage());
+            ctx.status(500).html(ThymeleafConfig.render("erro500", model));
+        });
+
+        app.exception(Exception.class, (e, ctx) -> {
+            Map<String, Object> model = new HashMap<>();
+            model.put("mensagem", "Ocorreu um erro inesperado. Tente novamente.");
+            ctx.status(500).html(ThymeleafConfig.render("erro500", model));
+        });
 
         return app.start(porta);
     }

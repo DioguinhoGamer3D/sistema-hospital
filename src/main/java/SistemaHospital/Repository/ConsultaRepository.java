@@ -4,6 +4,8 @@ import SistemaHospital.ConexaoDB;
 import SistemaHospital.Model.Consulta;
 import SistemaHospital.Model.Medico;
 import SistemaHospital.Model.Paciente;
+import SistemaHospital.Uteis.Exceptions.ErroDeServidor;
+import SistemaHospital.Uteis.Exceptions.RecursoNaoEncontrado;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -36,7 +38,7 @@ public class ConsultaRepository {
             if (rs.next()) c.setCodC(rs.getInt("cod_c"));
             return c;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar consulta: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao salvar consulta: " + e.getMessage());
         }
     }
 
@@ -49,7 +51,7 @@ public class ConsultaRepository {
 
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar consultas: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar consultas: " + e.getMessage());
         }
         return lista;
     }
@@ -62,10 +64,10 @@ public class ConsultaRepository {
             stmt.setInt(1, cod);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return mapear(rs);
+            throw new RecursoNaoEncontrado("Consulta", cod);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar consulta: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar consulta: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Consulta> buscarPorPaciente(int codP) {
@@ -88,7 +90,7 @@ public class ConsultaRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar consultas por data: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar consultas por data: " + e.getMessage());
         }
         return lista;
     }
@@ -101,7 +103,7 @@ public class ConsultaRepository {
             stmt.setInt(1, cod);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao remover consulta: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao remover consulta: " + e.getMessage());
         }
     }
 
@@ -113,7 +115,7 @@ public class ConsultaRepository {
 
             if (rs.next()) return rs.getDouble(1);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao calcular faturamento: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao calcular faturamento: " + e.getMessage());
         }
         return 0;
     }
@@ -127,7 +129,7 @@ public class ConsultaRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar consultas: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar consultas: " + e.getMessage());
         }
         return lista;
     }
@@ -146,7 +148,7 @@ public class ConsultaRepository {
             stmt.setInt   (6, c.getCodC());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar consulta: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao atualizar consulta: " + e.getMessage());
         }
     }
 
@@ -172,7 +174,7 @@ public class ConsultaRepository {
                 lista.add(medicoRepo.mapear(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar médico com mais consultas: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar médico com mais consultas: " + e.getMessage());
         }
         return lista;
     }
@@ -199,7 +201,7 @@ public class ConsultaRepository {
                 lista.add(pacienteRepo.mapear(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar paciente mais frequente: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar paciente mais frequente: " + e.getMessage());
         }
         return lista;
     }

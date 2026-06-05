@@ -1,6 +1,6 @@
 package SistemaHospital.Controller;
 
-import SistemaHospital.Enum.Sexo;
+import SistemaHospital.Uteis.Enum.Sexo;
 import SistemaHospital.Model.Medico;
 import SistemaHospital.Repository.MedicoRepository;
 import SistemaHospital.ThymeleafConfig;

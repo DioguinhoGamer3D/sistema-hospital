@@ -1,8 +1,10 @@
 package SistemaHospital.Repository;
 
 import SistemaHospital.ConexaoDB;
-import SistemaHospital.Enum.Sexo;
+import SistemaHospital.Uteis.Enum.Sexo;
 import SistemaHospital.Model.Paciente;
+import SistemaHospital.Uteis.Exceptions.ErroDeServidor;
+import SistemaHospital.Uteis.Exceptions.RecursoNaoEncontrado;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class PacienteRepository {
                 lista.add(mapear(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar pacientes: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar pacientes: " + e.getMessage());
         }
         return lista;
     }
@@ -59,10 +61,10 @@ public class PacienteRepository {
             stmt.setInt(1, cod);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return mapear(rs);
+            throw new RecursoNaoEncontrado("Paciente", cod);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar paciente: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar paciente: " + e.getMessage());
         }
-        return null;
     }
 
     public Paciente buscarPorCpf(String cpf) {
@@ -73,10 +75,10 @@ public class PacienteRepository {
             stmt.setString(1, cpf);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return mapear(rs);
+            throw new RecursoNaoEncontrado("Paciente", cpf);
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar paciente por CPF: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar paciente por CPF: " + e.getMessage());
         }
-        return null;
     }
 
     public void atualizar(Paciente p) {
@@ -93,7 +95,7 @@ public class PacienteRepository {
             stmt.setInt   (6, p.getCodP());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar paciente: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao atualizar paciente: " + e.getMessage());
         }
     }
 
@@ -105,7 +107,7 @@ public class PacienteRepository {
             stmt.setInt(1, cod);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao remover paciente: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao remover paciente: " + e.getMessage());
         }
     }
 
@@ -119,7 +121,7 @@ public class PacienteRepository {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) lista.add(mapear(rs));
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar pacientes por nome: " + e.getMessage());
+            throw new ErroDeServidor("Erro ao buscar pacientes por nome: " + e.getMessage());
         }
         return lista;
     }

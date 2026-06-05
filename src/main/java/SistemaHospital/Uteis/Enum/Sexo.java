@@ -1,4 +1,4 @@
-package SistemaHospital.Enum;
+package SistemaHospital.Uteis.Enum;
 
 public enum Sexo {
     MASCULINO,
