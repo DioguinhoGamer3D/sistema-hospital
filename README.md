@@ -32,16 +32,17 @@ O **Sistema Hospital** é uma aplicação web desenvolvida em Java que centraliz
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Java 21** — Linguagem principal
-- **Maven** — Gerenciamento de dependências e build
-- **Javalin 6.3.0** — Servidor web
-- **Thymeleaf 3.1.2** — Motor de templates HTML
-- **Bootstrap 5.3** — Estilização da interface
-- **PostgreSQL 16** — Banco de dados relacional
-- **Docker + Docker Compose** — Containerização da aplicação e banco
-- **JUnit 5.8** — Testes unitários
-- **REST Assured 5.4** — Testes de integração HTTP
-- **IntelliJ IDEA** — IDE de desenvolvimento
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| Java | 21 | Linguagem principal |
+| Maven | 3.8+ | Gerenciamento de dependências e build |
+| Javalin | 6.3.0 | Servidor web |
+| Thymeleaf | 3.1.2 | Motor de templates HTML |
+| Bootstrap | 5.3 | Estilização da interface |
+| PostgreSQL | 16 | Banco de dados relacional |
+| Docker + Compose | — | Containerização |
+| JUnit | 5.8 | Testes unitários |
+| REST Assured | 5.4 | Testes de integração HTTP |
 
 ---
 
@@ -53,41 +54,68 @@ O projeto segue o padrão **MVC (Model-View-Controller)** com camada de reposit�
 src/
 ├── main/
 │   ├── java/SistemaHospital/
-│   │   ├── Controller/         ← Recebe requisições HTTP e coordena a resposta
+│   │   ├── Controller/             ← Recebe requisições HTTP e coordena a resposta
 │   │   │   ├── PacienteController.java
 │   │   │   ├── MedicoController.java
 │   │   │   ├── ConsultaController.java
 │   │   │   └── RelatorioController.java
-│   │   ├── Repository/         ← Acesso ao banco de dados (SQL)
+│   │   ├── Repository/             ← Acesso ao banco de dados (SQL)
 │   │   │   ├── PacienteRepository.java
 │   │   │   ├── MedicoRepository.java
 │   │   │   └── ConsultaRepository.java
-│   │   ├── Model/              ← Classes de dados (Paciente, Medico, Consulta)
-│   │   ├── Enum/               ← Enumerações (Sexo)
-│   │   ├── Exceptions/         ← Exceções customizadas
-│   │   │   ├── ErroDeServidor.java
-│   │   │   └── RecursoNaoEncontrado.java
-│   │   ├── ConexaoDB.java      ← Configuração da conexão com PostgreSQL
-│   │   ├── App.java            ← Ponto de entrada e configuração das rotas
-│   │   └── ThymeleafConfig.java← Configuração do motor de templates
+│   │   ├── Model/                  ← Classes de dados (Paciente, Medico, Consulta)
+│   │   ├── Uteis/
+│   │   │   ├── Enum/               ← Enumerações (Sexo)
+│   │   │   └── Exceptions/         ← Exceções customizadas
+│   │   │       ├── ErroDeServidor.java
+│   │   │       └── RecursoNaoEncontrado.java
+│   │   ├── ConexaoDB.java          ← Configuração da conexão com PostgreSQL
+│   │   ├── App.java                ← Ponto de entrada e configuração das rotas
+│   │   └── ThymeleafConfig.java    ← Configuração do motor de templates
 │   └── resources/
-│       ├── templates/          ← HTMLs do Thymeleaf (View)
-│       │   ├── pacientes/
-│       │   ├── medicos/
-│       │   ├── consultas/
-│       │   ├── relatorios/
-│       │   ├── erro404.html    ← Página de recurso não encontrado
-│       │   └── erro500.html    ← Página de erro interno
+│       ├── templates/              ← HTMLs do Thymeleaf (View)
+│       │   ├── pacientes/          ← lista.html, form.html, buscar.html
+│       │   ├── medicos/            ← lista.html, form.html, especialidade.html
+│       │   ├── consultas/          ← lista.html, form.html
+│       │   ├── relatorios/         ← index.html
+│       │   ├── erro404.html        ← Página de recurso não encontrado
+│       │   └── erro500.html        ← Página de erro interno
 │       └── static/
-│           ├── css/            ← Estilos
-│           └── images/         ← Imagens estáticas
+│           ├── css/                ← Estilos
+│           └── images/             ← Imagens estáticas
 └── test/
     └── java/Testes/
         ├── Gerencia/
-        │   ├── HospitalTest.java         ← Testes unitários de paciente
-        │   └── GerenciaHospitalTest.java ← Testes unitários de médico, consulta e relatórios
+        │   ├── HospitalTest.java           ← Testes unitários de paciente
+        │   └── GerenciaHospitalTest.java   ← Testes unitários de médico, consulta e relatórios
+        ├── Repository/
+        │   ├── PacienteRepositoryTest.java ← Testes do repositório de pacientes
+        │   ├── MedicoRepositoryTest.java   ← Testes do repositório de médicos
+        │   └── ConsultaRepositoryTest.java ← Testes do repositório de consultas
         └── WebTest/
-            └── WebTest.java              ← Testes de integração HTTP
+            └── WebTest.java                ← Testes de integração HTTP
+```
+
+### Fluxo de uma requisição
+
+```
+Navegador
+    ↓  requisição HTTP
+Javalin (roteador)
+    ↓  chama o método correto
+Controller
+    ↓  busca/salva dados
+Repository
+    ↓  executa SQL
+PostgreSQL
+    ↑  retorna dados
+Repository
+    ↑  retorna objeto Java
+Controller
+    ↑  passa model para o Thymeleaf
+Thymeleaf
+    ↑  renderiza HTML
+Navegador
 ```
 
 ---
@@ -168,7 +196,7 @@ cd sistema-hospital
 psql -U postgres -c "CREATE DATABASE hospital;"
 psql -U postgres -d hospital -f init.sql
 
-# 4. Configure as credenciais no ConexaoDB.java
+# 4. Configure as variáveis de ambiente ou edite o ConexaoDB.java
 # src/main/java/SistemaHospital/ConexaoDB.java
 
 # 5. Compile e execute
@@ -197,22 +225,35 @@ DB_PASSWORD=sua_senha_aqui
 ```bash
 # Rodar todos os testes
 mvn test
+
+# Rodar só os testes de repositório (requer banco de teste na porta 5434)
+docker-compose up db-test -d
+mvn test -Dtest="PacienteRepositoryTest,MedicoRepositoryTest,ConsultaRepositoryTest"
+
+# Rodar só os testes de integração web (requer banco principal na porta 5432)
+docker-compose up db -d
+mvn test -Dtest="WebTest"
 ```
 
-O projeto possui dois tipos de testes:
+O projeto possui três tipos de testes:
 
-**Testes unitários** — validam a lógica de negócio isolada sem servidor nem banco:
+**Testes unitários** (`Testes/Gerencia/`) — validam a lógica de negócio isolada, sem servidor nem banco:
 - Cadastro, remoção e pesquisa de pacientes
 - Cadastro, remoção e pesquisa de médicos
 - Cadastro, cancelamento e filtros de consultas
 - Faturamento, médico com mais consultas e paciente mais frequente
 - Validação de CPF duplicado e consulta duplicada
 
-**Testes de integração** — sobem o servidor na porta 7071 e fazem requisições HTTP reais:
+**Testes de repositório** (`Testes/Repository/`) — validam o acesso ao banco usando um banco de teste separado (porta 5434):
+- CRUD completo de pacientes, médicos e consultas
+- Buscas por nome, especialidade, turno, convênio e data
+- Validação de CPF duplicado via constraint do banco
+- Cálculo de faturamento e relatórios do banco
+
+**Testes de integração** (`Testes/WebTest/`) — sobem o servidor na porta 7071 e fazem requisições HTTP reais:
 - GET em todas as páginas (pacientes, médicos, consultas, relatórios)
 - POST de cadastro com redirect
-- POST de edição
-- POST de remoção
+- POST de edição e remoção
 - POST de cancelamento de consulta
 - Validação de rota inexistente (404)
 
@@ -224,11 +265,11 @@ O projeto possui dois tipos de testes:
 - [x] Interface web com Javalin e Thymeleaf
 - [x] Arquitetura MVC com camada de repositório
 - [x] Estilização com Bootstrap (tema hospitalar azul)
-- [x] Filtros por nome, especialidade, turno, data e mais
+- [x] Filtros por nome, especialidade, turno, convênio, data e mais
 - [x] Relatórios (faturamento, top médicos, top pacientes)
 - [x] Persistência com PostgreSQL
 - [x] Containerização com Docker e Docker Compose
-- [x] Testes unitários e de integração
+- [x] Testes unitários, de repositório e de integração
 - [x] Páginas de erro amigáveis (404 e 500)
 - [x] Exceções customizadas (RecursoNaoEncontrado, ErroDeServidor)
 - [ ] CPFs banidos persistidos no banco

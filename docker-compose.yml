@@ -12,6 +12,18 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  db-test:
+    image: postgres:16
+    container_name: hospital-db-test
+    environment:
+      POSTGRES_DB: hospital_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
   app:
     build: .
     container_name: hospital-app
